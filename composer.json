@@ -1,0 +1,19 @@
+{
+  "name": "noor/datafeedr-comparison-template",
+  "type": "wordpress-plugin",
+  "homepage": "https://github.com/NoorDigitalAgency/datafeedr-comparison-template",
+  "license": "MIT",
+  "description": "Display Datafeedr comparison sets template",
+  "authors": [
+    {
+      "name": "Noor Digital Agency",
+      "email": "christoffer.ohman@noor.se",
+      "homepage": "https://noordigital.com"
+    }
+  ],
+  "keywords": ["wp", "datafeedr", "comparison", "sets", "template"],
+  "require": {
+    "php": ">=7.1",
+    "yahnis-elsts/plugin-update-checker": "^4.10"
+  }
+}
