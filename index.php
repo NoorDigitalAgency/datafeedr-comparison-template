@@ -107,14 +107,49 @@ if ( !function_exists('noor_options_hmtl') ) {
   }
 }
 
+// Display custom template
 add_filter( 'dfrcs_template', function ( $template, $instance ) {
-
-  // var_dump('<pre>', $template, '</pre>');
 
   return plugin_dir_path( __FILE__ ) . '/template.php';
 }, 99, 2);
 
-add_filter( 'dfrcs_filter_products',function ( $filtered_products, $all_products ) {
+// add_filter( 'dfrcs_filter_products', function ( $filtered_products, $all_products ) {
 
-  // var_dump('<pre>', $all_products, '</pre>');
+//   var_dump('<pre>', isset($), '</pre>');
+
+//   return $filtered_products;
+// }, 99, 2);
+
+// add_filter( 'dfrcs_valid_filters', function($filters) {
+
+//   $filters[] = 'noor_custom';
+//   return $filters;
+// }, 99);
+
+// add_filter( 'dfrcs_products', function( $products, $compset ) {
+  
+//   return $products;
+// }, 99, 2);
+
+// add_filter( 'dfrcs_arguments', function ( $args, $instance ) {
+
+//   return $args;
+// }, 99, 2);
+
+add_filter( 'dfrcs_order', function ( $order, $instance ) {
+
+  $tmpl_options = get_option('dftemplate_settings');
+
+  if ( $tmpl_options['from_highest'] === '1' ) {
+
+    return 'desc';
+  }
+
+  return $order;
 }, 99, 2);
+
+add_filter( 'dfrcs_orderby', function( $orderby, $instance ) {
+  $tmpl_options = get_option('dftemplate_settings');
+
+  return $orderby;
+}, 10, 2);

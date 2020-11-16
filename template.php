@@ -9,11 +9,6 @@
 	<ul class="dfrcs_compset">
 		<?php if ( $dfrcs_products = dfrcs_products() ) : global $dfrcs_product;
 
-			if ( $tmpl_options['from_highest'] === '1' ) {
-
-				$dfrcs_products = array_reverse( $dfrcs_products, true );
-			}
-			
 			foreach ( $dfrcs_products as $dfrcs_product ) : ?>
 				<li class="<?php echo dfrcs_row_class(); ?>">
 					<a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
