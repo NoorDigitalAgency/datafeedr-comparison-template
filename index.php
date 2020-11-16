@@ -1,9 +1,10 @@
 <?php
 /**
- * Plugin Name: Noor Datafeedr Template
+ * Plugin Name: Datafeedr Comparison Template
  * Description: Template extention options to datafeedr Comparison Sets
  * Version: 0.0.1
- * Authout: Noor Digital Agency
+ * Author: Noor Digital Agency
+ * Author URI: https://noordigital.com 
  */
 
 // Require composer autoloader
