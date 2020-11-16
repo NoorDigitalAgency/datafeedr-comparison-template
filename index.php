@@ -88,6 +88,15 @@ if ( !function_exists('noor_options_hmtl') ) {
                 <label class="description" for="dftemplate_settings[show_price]"><?php _e('Check this to display price in table.'); ?></label>
               </td>
             </tr>
+            <tr valign="top">
+              <th scope="row" valign="top">
+                <?php _e( 'Dsiplay price from Highest to Lowest' ); ?>
+              </th>
+              <td>
+                <input id="dftemplate_settings[from_highest]" name="dftemplate_settings[from_highest]" type="checkbox" value="1" <?php echo checked( 1, $options['from_highest'], false ); ?> />
+                <label class="description" for="dftemplate_settings[from_highest]"><?php _e('Check this to display price in table.'); ?></label>
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -103,4 +112,9 @@ add_filter( 'dfrcs_template', function ( $template, $instance ) {
   // var_dump('<pre>', $template, '</pre>');
 
   return plugin_dir_path( __FILE__ ) . '/template.php';
+}, 99, 2);
+
+add_filter( 'dfrcs_filter_products',function ( $filtered_products, $all_products ) {
+
+  // var_dump('<pre>', $all_products, '</pre>');
 }, 99, 2);

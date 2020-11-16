@@ -1,6 +1,6 @@
 <?php global $compset; ?>
 
-<?php $options = get_option('dftemplate_settings') ?>
+<?php $tmpl_options = get_option('dftemplate_settings') ?>
 
 <?php if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) : ?>
 
@@ -8,16 +8,22 @@
 
 	<ul class="dfrcs_compset">
 		<?php if ( $dfrcs_products = dfrcs_products() ) : global $dfrcs_product;
+
+			if ( $tmpl_options['from_highest'] === '1' ) {
+
+				$dfrcs_products = array_reverse( $dfrcs_products, true );
+			}
+			
 			foreach ( $dfrcs_products as $dfrcs_product ) : ?>
 				<li class="<?php echo dfrcs_row_class(); ?>">
 					<a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
 						<div class="item">
-              <?php if ( $options['show_prod_img'] === '1') { ?>
+              <?php if ( $tmpl_options['show_prod_img'] === '1') { ?>
 
 							  <div class="dfrcs_image"><?php echo dfrcs_image(); ?></div>
               <?php } ?>
 							<div class="dfrcs_logo"><?php echo dfrcs_logo(); ?></div>
-              <?php if ( $options['show_price'] === '1' ) { ?>
+              <?php if ( $tmpl_options['show_price'] === '1' ) { ?>
 
                 <div class="dfrcs_price"><?php echo dfrcs_price(); ?></div>
               <?php } ?>
