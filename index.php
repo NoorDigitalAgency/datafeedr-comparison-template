@@ -30,6 +30,8 @@ $plugin_updater->getVcsApi()->enableReleaseAssets();
 
 class NoorDFRCSTemplate {
   
+  private $post;
+
   private $options;
 
   private $all_networks;
@@ -38,6 +40,15 @@ class NoorDFRCSTemplate {
 
   public function __construct() {
     
+    // Makesure to set display type to php in order to have post params available
+    $dfrcs_options = get_option('dfrcs_options');
+    if ( $dfrcs_options && $dfrcs_options['display_method'] != 'php' ) {
+
+      $dfrcs_options['display_method'] = 'php';
+
+      update_option( 'dfrcs_options', $dfrcs_options ); 
+    }
+
     add_action( 'admin_menu', [$this, 'register_template_sub_menu_page'], 999 );
     add_action( 'admin_init', [$this, 'register_template_settings'] );
     add_filter( 'dfrcs_order', [$this, 'sort_desc'], 99, 2 );
@@ -47,9 +58,9 @@ class NoorDFRCSTemplate {
     add_filter( 'dfrcs_logo', [$this, 'show_merchant'], 10, 2 );
     add_filter( 'dfrcs_price', [$this, 'show_price'], 10, 2 );
     add_filter( 'dfrcs_link', [$this, 'network_uri_extention'], 10, 2 );
-    
-    $this->options = get_option('dftemplate_settings');
 
+    $this->options = get_option('dftemplate_settings');
+    
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
       
       $this->all_networks = dfrapi_api_get_all_networks();
@@ -57,35 +68,11 @@ class NoorDFRCSTemplate {
 
     $this->get_active_networks();
   }
-
-  /**
-   * is_active_network
-   * 
-   * Copy from Datafeedr plugins num_networks_checked_in_group
-   * 
-   * @param string $group_name
-   * 
-   * @return null|string
-   */
-  function is_active_network ( string $group_name ) {
-		$count = 0;
-		foreach ( $this->all_networks as $network ) {
-			if ( $network['group'] == $group_name ) {
-				if ( array_key_exists( $network['_id'], get_option( 'dfrapi_networks' )['ids'] ) ) { 
-          $count++;
-				}
-			}
-		}
-
-		if ( $count > 0 ) {
-      return 'active';
-    }
-  }
   
   /**
    * get_active_networks
    * 
-   * Generates array of active network names
+   * Generates array of active networks
    * 
    * @return void
    */
@@ -93,16 +80,11 @@ class NoorDFRCSTemplate {
 
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
 
-      $groups = array_map( function ( $network ) {
-
-        return $network['group'];
-      }, $this->all_networks );
+      $active_networks = array_keys( get_option('dfrapi_networks')['ids'] );
       
-      $groups = array_unique( $groups );
-     
-      $this->active_networks = array_filter( $groups, function ($group) {
-
-        return $this->is_active_network( $group ) != '';
+      $this->active_networks = array_filter( $this->all_networks, function ( $network ) use ( $active_networks ) {
+        
+        return in_array( $network['_id'], $active_networks );
       });
     }
   }
@@ -225,7 +207,7 @@ class NoorDFRCSTemplate {
    */
   public function show_title ( string $title, Dfrcs $compset ): string {
 
-    if ( 0 == $this->options['show_title'] ) {
+    if ( ! isset( $this->options['show_title'] ) ) {
 
       return '';
     }
@@ -244,7 +226,7 @@ class NoorDFRCSTemplate {
    */
   public function show_product_image ( string $html, array $product ): string {
 
-    if ( 0 == $this->options['show_prod_img'] ) {
+    if ( ! isset( $this->options['show_prod_img'] ) ) {
       
       return '';
     }
@@ -263,7 +245,7 @@ class NoorDFRCSTemplate {
    */
   public function show_merchant ( string $html, array $product ): string {
 
-    if ( 0 == $this->options['show_merchant'] ) {
+    if ( ! isset( $this->options['show_merchant'] ) ) {
       
       return '';
     }
@@ -282,7 +264,7 @@ class NoorDFRCSTemplate {
    */
   public function show_price ( string $html, array $product ): string {
 
-    if ( 0 == $this->options['show_price'] ) {
+    if ( ! isset( $this->options['show_price'] ) ) {
       
       return '';
     }
@@ -301,12 +283,22 @@ class NoorDFRCSTemplate {
    */
   public function network_uri_extention( string $url, array $product ): string {
 
-    var_dump('<pre>', $product, '</pre>');
-    return $url;
+    if ( empty( $extention = $this->options['uri_ext_' . $product['source_id']] ) ) {
+
+      return $url;
+    }
+
+    $post = get_post()->post_name;
+
+    $extention = str_replace( '{page}', $post, $extention );
+
+    $extention = str_replace( '{product}', urlencode($product['name']), $extention );
+    
+    return $url . '&' . $extention;
   }
 }
 
-if ( ! class_exists( 'Dfrcs' ) && ! class_exists( 'Dfrapi_Networks' ) ) {
+if ( ! class_exists( 'Dfrapi' ) && ! class_exists( 'Dfrcs' ) ) {
 
   wp_die( 'This plugin relies on datafeedr Comparison Sets plugin.' );
 }
