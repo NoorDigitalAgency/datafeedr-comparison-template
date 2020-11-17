@@ -5,10 +5,6 @@
 
 global $compset;
 
-var_dump('<pre>', $compset, '</pre>');
-
-$tmpl_options = get_option('dftemplate_settings');
-
 if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) : ?>
 
 	<h2><?php echo dfrcs_title(); ?></h2>
@@ -20,22 +16,9 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
 				<li class="<?php echo dfrcs_row_class(); ?>">
 					<a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
 						<div class="item">
-							<?php
-								if ( 1 == $tmpl_options['show_prod_img'] ) {
-
-									echo '<div class="dfrcs_image">' . dfrcs_image() . '</div>';
-								}
-
-								if ( 1 == $tmpl_options['show_merchant'] ) {
-
-									echo '<div class="dfrcs_logo">' . dfrcs_logo() . '</div>';
-								}
-
-								if ( 1 == $tmpl_options['show_price'] ) {
-
-									echo '<div class="dfrcs_price">' . dfrcs_price() .'</div>';
-								}
-							?>
+							<div class="dfrcs_image"><?php echo dfrcs_image(); ?></div>
+							<div class="dfrcs_logo"><?php echo dfrcs_logo(); ?></div>
+							<div class="dfrcs_price"><?php echo dfrcs_price(); ?></div>
 							<div class="dfrcs_link">
 								<span class="dfrcs_action"><?php echo dfrcs_link_text(); ?></span>
 							</div>

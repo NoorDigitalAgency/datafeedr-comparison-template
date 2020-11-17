@@ -29,14 +29,82 @@ $plugin_updater = Puc_v4_Factory::buildUpdateChecker(
 $plugin_updater->getVcsApi()->enableReleaseAssets();
 
 class NoorDFRCSTemplate {
+  
+  private $options;
+
+  private $all_networks;
+
+  private $active_networks;
 
   public function __construct() {
-
+    
     add_action( 'admin_menu', [$this, 'register_template_sub_menu_page'], 999 );
     add_action( 'admin_init', [$this, 'register_template_settings'] );
-    add_filter( 'dfrcs_template', [$this, 'load_custom_template'], 10, 2 );
-    add_filter( 'dfrcs_order', [$this, 'display_order'], 99, 2 );
-    add_filter( 'dfrcs_filter_products', [$this, 'second_filter'], 10, 2 );
+    add_filter( 'dfrcs_order', [$this, 'sort_desc'], 99, 2 );
+    add_filter( 'dfrcs_orderby', [$this, 'order_by'], 10, 2 );
+    add_filter( 'dfrcs_title', [$this, 'show_title'], 10, 2 );
+    add_filter( 'dfrcs_image', [$this, 'show_product_image'], 10, 2 );
+    add_filter( 'dfrcs_logo', [$this, 'show_merchant'], 10, 2 );
+    add_filter( 'dfrcs_price', [$this, 'show_price'], 10, 2 );
+    add_filter( 'dfrcs_link', [$this, 'network_uri_extention'], 10, 2 );
+    
+    $this->options = get_option('dftemplate_settings');
+
+    if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
+      
+      $this->all_networks = dfrapi_api_get_all_networks();
+    }
+
+    $this->get_active_networks();
+  }
+
+  /**
+   * is_active_network
+   * 
+   * Copy from Datafeedr plugins num_networks_checked_in_group
+   * 
+   * @param string $group_name
+   * 
+   * @return null|string
+   */
+  function is_active_network ( string $group_name ) {
+		$count = 0;
+		foreach ( $this->all_networks as $network ) {
+			if ( $network['group'] == $group_name ) {
+				if ( array_key_exists( $network['_id'], get_option( 'dfrapi_networks' )['ids'] ) ) { 
+          $count++;
+				}
+			}
+		}
+
+		if ( $count > 0 ) {
+      return 'active';
+    }
+  }
+  
+  /**
+   * get_active_networks
+   * 
+   * Generates array of active network names
+   * 
+   * @return void
+   */
+  private function get_active_networks (): void {
+
+    if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
+
+      $groups = array_map( function ( $network ) {
+
+        return $network['group'];
+      }, $this->all_networks );
+      
+      $groups = array_unique( $groups );
+     
+      $this->active_networks = array_filter( $groups, function ($group) {
+
+        return $this->is_active_network( $group ) != '';
+      });
+    }
   }
 
   /**
@@ -82,7 +150,8 @@ class NoorDFRCSTemplate {
    */
   public function template_menu_page_html () {
 
-    $options = get_option('dftemplate_settings');
+    $options = $this->options;
+    $active_networks = $this->active_networks;
 
     require plugin_dir_path( __FILE__ ) .'/templates/menu-page.php';
   }
@@ -98,13 +167,13 @@ class NoorDFRCSTemplate {
    * 
    * @return string
    */
-  public function load_custom_template ( string $template, Dfrcs $instance ): string {
+  // public function load_custom_template ( string $template, Dfrcs $instance ): string {
     
-    return plugin_dir_path( __FILE__ ) . '/templates/template.php';
-  }
+  //   return plugin_dir_path( __FILE__ ) . '/templates/template.php';
+  // }
 
   /**
-   * display_order
+   * sort_desc
    * 
    * Sort order either asc|desc
    * 
@@ -114,11 +183,9 @@ class NoorDFRCSTemplate {
    * 
    * @return string
    */
-  public function display_order ( string $order, Dfrcs $instance ): string {
-
-    $tmpl_options = get_option('dftemplate_settings');
+  public function sort_desc ( string $order, Dfrcs $instance ): string {
   
-    if ( isset( $tmpl_options['from_highest'] ) && 1 == $tmpl_options['from_highest'] ) {
+    if ( isset( $this->options['sort_desc'] ) && 1 == $this->options['sort_desc'] ) {
   
       return 'desc';
     }
@@ -126,51 +193,122 @@ class NoorDFRCSTemplate {
     return $order;
   }
 
-  public function second_filter( $filtered, $all ) {
+  /**
+   * order_by
+   * 
+   * Sort order price or mrechant
+   * 
+   * @param string $order
+   * 
+   * @param Dfrcs $instance
+   * 
+   * @return string
+   */
+  public function order_by ( string $orderby, Dfrcs  $instance ): string {
+    
+    if ( isset( $this->options['order_by'] ) && ! empty( $this->options['order_by'] ) ) {
 
-    global $compset;
+      return $this->options['order_by'];
+    }
+  
+    return $orderby;
+  }
 
-    // var_dump('<pre>', $compset, '</pre>');
-    // var_dump('<pre>', $filtered, '</pre>');
+  /**
+   * show_title
+   * 
+   * @param string $title
+   * 
+   * @param Dfrcs $compset
+   * 
+   * @return string
+   */
+  public function show_title ( string $title, Dfrcs $compset ): string {
 
-    return $filtered;
+    if ( 0 == $this->options['show_title'] ) {
+
+      return '';
+    }
+
+    return $title;
+  }
+
+  /**
+   * show_product_image
+   * 
+   * @param string $title
+   * 
+   * @param array $product
+   * 
+   * @return string
+   */
+  public function show_product_image ( string $html, array $product ): string {
+
+    if ( 0 == $this->options['show_prod_img'] ) {
+      
+      return '';
+    }
+
+    return $html;
+  }
+
+  /**
+   * show_merchant
+   * 
+   * @param string $title
+   * 
+   * @param array $product
+   * 
+   * @return string
+   */
+  public function show_merchant ( string $html, array $product ): string {
+
+    if ( 0 == $this->options['show_merchant'] ) {
+      
+      return '';
+    }
+
+    return $html;
+  }
+
+  /**
+   * show_price
+   * 
+   * @param string $title
+   * 
+   * @param array $product
+   * 
+   * @return string
+   */
+  public function show_price ( string $html, array $product ): string {
+
+    if ( 0 == $this->options['show_price'] ) {
+      
+      return '';
+    }
+
+    return $html;
+  }
+
+  /**
+   * network_uri_extention
+   * 
+   * @param string $title
+   * 
+   * @param array $product
+   * 
+   * @return string
+   */
+  public function network_uri_extention( string $url, array $product ): string {
+
+    var_dump('<pre>', $product, '</pre>');
+    return $url;
   }
 }
 
-if ( ! class_exists( 'Dfrcs' ) ) {
+if ( ! class_exists( 'Dfrcs' ) && ! class_exists( 'Dfrapi_Networks' ) ) {
 
   wp_die( 'This plugin relies on datafeedr Comparison Sets plugin.' );
 }
 
 $template = new NoorDFRCSTemplate();
-
-// add_filter( 'dfrcs_filter_products', function ( $filtered_products, $all_products ) {
-
-//   var_dump('<pre>', isset($), '</pre>');
-
-//   return $filtered_products;
-// }, 99, 2);
-
-// add_filter( 'dfrcs_valid_filters', function($filters) {
-
-//   $filters[] = 'noor_custom';
-//   return $filters;
-// }, 99);
-
-// add_filter( 'dfrcs_products', function( $products, $compset ) {
-  
-//   return $products;
-// }, 99, 2);
-
-// add_filter( 'dfrcs_arguments', function ( $args, $instance ) {
-
-//   return $args;
-// }, 99, 2);
-
-
-
-add_filter( 'dfrcs_orderby', function( $orderby, $instance ) {
-  $tmpl_options = get_option('dftemplate_settings');
-
-  return $orderby;
-}, 10, 2);
