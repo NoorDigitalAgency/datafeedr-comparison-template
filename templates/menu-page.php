@@ -1,6 +1,7 @@
 <div class="wrap">
   <h2><?php _e('Datafeedr Template Options'); ?></h2>
 
+  <p><?php _e( 'These template options are global and apply to all Comparison Set tables.'); ?></p>
   <form method="post" action="options.php">
 
   <?php settings_fields( 'dftemplate_settings_group' ); ?>
@@ -18,6 +19,15 @@
         </tr>
         <tr valign="top">
           <th scope="row" valign="top">
+            <?php _e( 'Dsiplay merchants brand/logo' ); ?>
+          </th>
+          <td>
+            <input id="dftemplate_settings[show_merchant]" name="dftemplate_settings[show_merchant]" type="checkbox" value="1" <?php echo checked( 1, $options['show_merchant'], false ); ?> />
+            <label class="description" for="dftemplate_settings[show_merchant]"><?php _e('Check this to display merchants brand/logo.'); ?></label>
+          </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row" valign="top">
             <?php _e( 'Dsiplay price' ); ?>
           </th>
           <td>
@@ -31,7 +41,7 @@
           </th>
           <td>
             <input id="dftemplate_settings[from_highest]" name="dftemplate_settings[from_highest]" type="checkbox" value="1" <?php echo checked( 1, $options['from_highest'], false ); ?> />
-            <label class="description" for="dftemplate_settings[from_highest]"><?php _e('Check this to display price in table.'); ?></label>
+            <label class="description" for="dftemplate_settings[from_highest]"><?php _e('Check this to display products from highest price to lowest.'); ?></label>
           </td>
         </tr>
       </tbody>

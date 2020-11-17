@@ -35,6 +35,8 @@ class NoorDFRCSTemplate {
     add_action( 'admin_menu', [$this, 'register_template_sub_menu_page'], 999 );
     add_action( 'admin_init', [$this, 'register_template_settings'] );
     add_filter( 'dfrcs_template', [$this, 'load_custom_template'], 10, 2 );
+    add_filter( 'dfrcs_order', [$this, 'display_order'], 99, 2 );
+    add_filter( 'dfrcs_filter_products', [$this, 'second_filter'], 10, 2 );
   }
 
   /**
@@ -48,8 +50,8 @@ class NoorDFRCSTemplate {
 
     add_submenu_page( 
       'dfrapi', 
-      __( 'Datafeedr Template Options' ),
-      __( 'Datafeedr Template Options' ),
+      __( 'Template Options' ),
+      __( 'Template Options' ),
       'manage_options',
       'dftemplate-settings',
       [$this, 'template_menu_page_html'],
@@ -100,6 +102,39 @@ class NoorDFRCSTemplate {
     
     return plugin_dir_path( __FILE__ ) . '/templates/template.php';
   }
+
+  /**
+   * display_order
+   * 
+   * Sort order either asc|desc
+   * 
+   * @param string $order
+   * 
+   * @param Dfrcs $instance
+   * 
+   * @return string
+   */
+  public function display_order ( string $order, Dfrcs $instance ): string {
+
+    $tmpl_options = get_option('dftemplate_settings');
+  
+    if ( isset( $tmpl_options['from_highest'] ) && 1 == $tmpl_options['from_highest'] ) {
+  
+      return 'desc';
+    }
+  
+    return $order;
+  }
+
+  public function second_filter( $filtered, $all ) {
+
+    global $compset;
+
+    // var_dump('<pre>', $compset, '</pre>');
+    // var_dump('<pre>', $filtered, '</pre>');
+
+    return $filtered;
+  }
 }
 
 if ( ! class_exists( 'Dfrcs' ) ) {
@@ -132,17 +167,7 @@ $template = new NoorDFRCSTemplate();
 //   return $args;
 // }, 99, 2);
 
-add_filter( 'dfrcs_order', function ( $order, $instance ) {
 
-  $tmpl_options = get_option('dftemplate_settings');
-
-  if ( $tmpl_options['from_highest'] === '1' ) {
-
-    return 'desc';
-  }
-
-  return $order;
-}, 99, 2);
 
 add_filter( 'dfrcs_orderby', function( $orderby, $instance ) {
   $tmpl_options = get_option('dftemplate_settings');

@@ -1,8 +1,15 @@
-<?php global $compset; ?>
+<?php 
+/**
+ * Custom Datafeedr template
+ */
 
-<?php $tmpl_options = get_option('dftemplate_settings') ?>
+global $compset;
 
-<?php if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) : ?>
+var_dump('<pre>', $compset, '</pre>');
+
+$tmpl_options = get_option('dftemplate_settings');
+
+if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) : ?>
 
 	<h2><?php echo dfrcs_title(); ?></h2>
 
@@ -13,15 +20,22 @@
 				<li class="<?php echo dfrcs_row_class(); ?>">
 					<a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
 						<div class="item">
-              <?php if ( $tmpl_options['show_prod_img'] === '1') { ?>
+							<?php
+								if ( 1 == $tmpl_options['show_prod_img'] ) {
 
-							  <div class="dfrcs_image"><?php echo dfrcs_image(); ?></div>
-              <?php } ?>
-							<div class="dfrcs_logo"><?php echo dfrcs_logo(); ?></div>
-              <?php if ( $tmpl_options['show_price'] === '1' ) { ?>
+									echo '<div class="dfrcs_image">' . dfrcs_image() . '</div>';
+								}
 
-                <div class="dfrcs_price"><?php echo dfrcs_price(); ?></div>
-              <?php } ?>
+								if ( 1 == $tmpl_options['show_merchant'] ) {
+
+									echo '<div class="dfrcs_logo">' . dfrcs_logo() . '</div>';
+								}
+
+								if ( 1 == $tmpl_options['show_price'] ) {
+
+									echo '<div class="dfrcs_price">' . dfrcs_price() .'</div>';
+								}
+							?>
 							<div class="dfrcs_link">
 								<span class="dfrcs_action"><?php echo dfrcs_link_text(); ?></span>
 							</div>
@@ -34,11 +48,11 @@
 			<?php endforeach; endif; ?>
 	</ul>
 
-<?php else : ?>
+<?php else :
 
-	<?php $no_results_message = dfrcs_no_results_message(); ?>
-	<?php if ( ! empty( $no_results_message ) ) : ?>
+	$no_results_message = dfrcs_no_results_message();
+	
+	if ( ! empty( $no_results_message ) ) : ?>
 		<div class="dfrcs_no_results_message"><?php echo $no_results_message; ?></div>
-	<?php endif; ?>
-
-<?php endif; ?>
+	<?php endif;
+endif; ?>
