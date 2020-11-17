@@ -73,30 +73,33 @@
     <table class="form-table">
       <h3>URI options</h3>
       <tbody>
-        <?php foreach ( $this->active_networks as $network ) {
+        <?php if ( is_array( $this->active_networks ) && ! empty( $this->active_networks ) ) {
+        
+          foreach ( $this->active_networks as $network ) {
 
-          $html = '<tr valign="top">';
+            $html = '<tr valign="top">';
 
-          $html .= sprintf( '<th scope="row" valign="top">%s</th>', 
-            __( ( 'AffiliateWindow' == $network['group'] ) ? 'Awin' : $network['group'] )
-          );
+            $html .= sprintf( '<th scope="row" valign="top">%s</th>', 
+              __( ( 'AffiliateWindow' == $network['group'] ) ? 'Awin' : $network['group'] )
+            );
 
-          $html .= '<td>';
+            $html .= '<td>';
 
-          $html .= sprintf( '<input id="%1$s" class="%2$s" name="%1$s" type="text" placeholder="%3$s" value="%4$s" />',
-            'dftemplate_settings[uri_ext_' . $network['_id'] . ']',
-            'regular-text',
-            'epi={page}-{product}',
-            isset( $this->options['uri_ext_' . $network['_id']] )
-              ? $this->options['uri_ext_' . $network['_id']]
-              : ''
-          );
+            $html .= sprintf( '<input id="%1$s" class="%2$s" name="%1$s" type="text" placeholder="%3$s" value="%4$s" />',
+              'dftemplate_settings[uri_ext_' . $network['_id'] . ']',
+              'regular-text',
+              'epi={page}-{product}',
+              isset( $this->options['uri_ext_' . $network['_id']] )
+                ? $this->options['uri_ext_' . $network['_id']]
+                : ''
+            );
 
-          $html .= '<p>Available placeholders: <code>{page}</code> <code>{product}</code></p>';
+            $html .= '<p>Available placeholders: <code>{page}</code> <code>{product}</code></p>';
 
-          $html .= '</td></tr>';
+            $html .= '</td></tr>';
 
-          echo $html;
+            echo $html;
+          }
         } ?>
       </tbody>
     </table>

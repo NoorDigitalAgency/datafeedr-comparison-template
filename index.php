@@ -38,6 +38,8 @@ class NoorDFRCSTemplate {
 
   private $active_networks;
 
+  private $active_network_ids;
+
   public function __construct() {
     
     // Makesure to set display type to php in order to have post params available
@@ -63,10 +65,15 @@ class NoorDFRCSTemplate {
     
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
       
+      $this->active_network_ids = get_option('dfrapi_networks');
+
       $this->all_networks = dfrapi_api_get_all_networks();
     }
 
-    $this->get_active_networks();
+    if ( is_array( $this->active_network_ids ) && ! empty( $this->active_network_ids ) ) {
+
+      $this->get_active_networks();
+    }
   }
   
   /**
@@ -80,7 +87,7 @@ class NoorDFRCSTemplate {
 
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
 
-      $active_networks = array_keys( get_option('dfrapi_networks')['ids'] );
+      $active_networks = array_keys( $this->active_network_ids['ids'] );
       
       $this->active_networks = array_filter( $this->all_networks, function ( $network ) use ( $active_networks ) {
         
