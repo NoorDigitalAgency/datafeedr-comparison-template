@@ -26,92 +26,88 @@ $plugin_updater = Puc_v4_Factory::buildUpdateChecker(
 	$package->name
 );
 
-// Stable branch master
-// $plugin_updater->setBranch( 'master' );
-
 $plugin_updater->getVcsApi()->enableReleaseAssets();
+
+class NoorDFRCSTemplate {
+
+  public function __construct() {
+
+    add_action( 'admin_menu', [$this, 'register_template_sub_menu_page'], 999 );
+    add_action( 'admin_init', [$this, 'register_template_settings'] );
+    add_filter( 'dfrcs_template', [$this, 'load_custom_template'], 10, 2 );
+  }
+
+  /**
+   * register_template_sub_menu_page
+   * 
+   * Registers sub menu page to Datafeedr API menu page
+   * 
+   * @return void
+   */
+  public function register_template_sub_menu_page () {
+
+    add_submenu_page( 
+      'dfrapi', 
+      __( 'Datafeedr Template Options' ),
+      __( 'Datafeedr Template Options' ),
+      'manage_options',
+      'dftemplate-settings',
+      [$this, 'template_menu_page_html'],
+      NULL
+    );
+  }
+
+  /**
+   * register_template_settings
+   * 
+   * Registers page options group for storing settings
+   * 
+   * @return void
+   */
+  public function register_template_settings () {
+    register_setting( 
+      'dftemplate_settings_group', 
+      'dftemplate_settings'
+    );
+  }
+
+  /**
+   * template_menu_page_html
+   * 
+   * Callback for rendering the page markup
+   * 
+   * @return void
+   */
+  public function template_menu_page_html () {
+
+    $options = get_option('dftemplate_settings');
+
+    require plugin_dir_path( __FILE__ ) .'/templates/menu-page.php';
+  }
+
+  /**
+   * load_custom_template
+   * 
+   * Overrides Datafeedr Comparison Sets default template
+   * 
+   * @param string $template
+   * 
+   * @param Dfrcs $instance
+   * 
+   * @return string
+   */
+  public function load_custom_template ( string $template, Dfrcs $instance ): string {
+    
+    return plugin_dir_path( __FILE__ ) . '/templates/template.php';
+  }
+}
 
 if ( ! class_exists( 'Dfrcs' ) ) {
 
   wp_die( 'This plugin relies on datafeedr Comparison Sets plugin.' );
 }
 
-add_action( 'admin_menu', function() {
-
-  add_options_page(
-    __( 'Datafeedr Template Options' ),
-    __( 'Datafeedr Template Options' ),
-    'manage_options',
-    'dftemplate-settings',
-    'noor_options_html'
-  );
-});
-
-add_action( 'admin_init', function () {
-
-  register_setting( 
-    'dftemplate_settings_group', 
-    'dftemplate_settings'
-  );
-});
-
-if ( !function_exists('noor_options_hmtl') ) {
-
-  function noor_options_html() {
-
-    $options = get_option('dftemplate_settings');
-    ?>
-      <div class="wrap">
-        <h2><?php _e('Datafeedr Template Options'); ?></h2>
-
-        <form method="post" action="options.php">
-
-        <?php settings_fields( 'dftemplate_settings_group' ); ?>
-
-        <table class="form-table">
-          <tbody>
-          <tr valign="top">
-              <th scope="row" valign="top">
-                <?php _e( 'Dsiplay product image' ); ?>
-              </th>
-              <td>
-                <input id="dftemplate_settings[show_prod_img]" name="dftemplate_settings[show_prod_img]" type="checkbox" value="1" <?php echo checked( 1, $options['show_prod_img'], false ); ?> />
-                <label class="description" for="dftemplate_settings[show_prod_img]"><?php _e('Check this to display product image in table.'); ?></label>
-              </td>
-            </tr>
-            <tr valign="top">
-              <th scope="row" valign="top">
-                <?php _e( 'Dsiplay price' ); ?>
-              </th>
-              <td>
-                <input id="dftemplate_settings[show_price]" name="dftemplate_settings[show_price]" type="checkbox" value="1" <?php echo checked( 1, $options['show_price'], false ); ?> />
-                <label class="description" for="dftemplate_settings[show_price]"><?php _e('Check this to display price in table.'); ?></label>
-              </td>
-            </tr>
-            <tr valign="top">
-              <th scope="row" valign="top">
-                <?php _e( 'Dsiplay price from Highest to Lowest' ); ?>
-              </th>
-              <td>
-                <input id="dftemplate_settings[from_highest]" name="dftemplate_settings[from_highest]" type="checkbox" value="1" <?php echo checked( 1, $options['from_highest'], false ); ?> />
-                <label class="description" for="dftemplate_settings[from_highest]"><?php _e('Check this to display price in table.'); ?></label>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <?php submit_button(); ?>
-        </form>
-      </div>
-    <?php
-  }
-}
-
-// Display custom template
-add_filter( 'dfrcs_template', function ( $template, $instance ) {
-
-  return plugin_dir_path( __FILE__ ) . '/template.php';
-}, 99, 2);
+$template = new NoorDFRCSTemplate();
 
 // add_filter( 'dfrcs_filter_products', function ( $filtered_products, $all_products ) {
 
