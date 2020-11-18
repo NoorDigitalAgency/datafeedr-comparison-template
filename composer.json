@@ -15,5 +15,10 @@
   "require": {
     "php": ">=7.1",
     "yahnis-elsts/plugin-update-checker": "^4.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Noor\\DatafeedrExt\\": "includes/"
+    }
   }
 }

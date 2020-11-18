@@ -1,0 +1,51 @@
+{
+  "tmpl_options_display": {
+    "title": "Display Options",
+    "callback": "displaySectionOutput",
+    "fields": [
+      {
+        "id": "show_title",
+        "title": "Display Table Title",
+        "callback": "showTitleOutput"
+      },
+      {
+        "id": "show_image",
+        "title": "Display Product Image",
+        "callback": "showImageOutput"
+      },
+      {
+        "id": "show_merchant",
+        "title": "Display Merchant Logo",
+        "callback": "showMerchantOutput"
+      },
+      {
+        "id": "show_price",
+        "title": "Display Product Price",
+        "callback": "showPriceOutput"
+      }
+    ]
+  },
+  "tmpl_options_sorting": {
+    "title": "Sorting Options",
+    "callback": "sortingSectionOutput",
+    "fields": [
+      {
+        "id": "order_desc",
+        "title": "Order DESC",
+        "callback": "orderDescOutput"
+      },
+      {
+        "id": "order_by",
+        "title": "Order By",
+        "callback": "orderByOutput"
+      }
+    ]
+  },
+  "tmpl_options_uri" : {
+    "title" : "URI Options",
+    "callback" : "uriSectionOutput",
+    "fields": [
+
+    ]
+  }
+}
