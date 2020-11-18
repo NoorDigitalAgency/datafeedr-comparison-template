@@ -28,7 +28,7 @@ class AdminOptions {
     }
   }
 
-  /**
+    /**
    * templateSubMenuPage
    * 
    * Registers sub menu page to Datafeedr API menu page
@@ -43,19 +43,19 @@ class AdminOptions {
       __( 'Template Options' ),
       'manage_options',
       'tmpl_options',
-      [$this, 'tmplOptionsOutput'],
+      [$this, 'optionsOutput'],
       NULL
     );
   }
 
   /**
-   * tmplOptions
+   * templateFields
    * 
    * Registers page options group for storing settings
    * 
    * @return void
    */
-  public function tmplOptions (): void {
+  public function templateFields (): void {
     
     foreach ( $this->activeNetworks as $network ) {
       
@@ -80,13 +80,13 @@ class AdminOptions {
   }
 
   /**
-   * tmplOptionsOutput
+   * optionsOutput
    * 
    * Callback for rendering the page markup
    * 
    * @return string
    */
-  public function tmplOptionsOutput () {
+  public function optionsOutput () {
     
     echo '<div class="wrap" id="tmpl_options">';
 

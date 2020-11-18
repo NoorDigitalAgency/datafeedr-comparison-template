@@ -12,7 +12,7 @@ class Template {
 
   private $activeNetworksIds;
 
-  public function __construct() {
+  public function __construct( $adminFields ) {
 
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
       
@@ -26,12 +26,9 @@ class Template {
       $this->activeNetworks = $this->setActiveNetworks();
     }
 
-    $adminFields = plugin_dir_path( __DIR__ ) . 'includes/admin-fields.json';
-    $adminFields = json_decode( file_get_contents( $adminFields ), true );
-
     $admin = new AdminOptions( $this->getActiveNetworks(), $adminFields );
     add_action( 'admin_menu', [$admin, 'templateSubMenuPage'], 999 );
-    add_action( 'admin_init', [$admin, 'tmplOptions'] );
+    add_action( 'admin_init', [$admin, 'templateFields'] );
 
     $public = new PublicUI();
     add_filter( 'dfrcs_order',    [$public, 'orderDesc'], 99, 2 );

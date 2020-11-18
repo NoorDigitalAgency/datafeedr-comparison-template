@@ -7,7 +7,11 @@
  * Author URI: https://noordigital.com 
  */
 
-// Require composer autoloader
+if ( ! class_exists( 'Dfrapi' ) && ! class_exists( 'Dfrcs' ) ) {
+
+  wp_die( 'This plugin relies on datafeedr Comparison Sets plugin.' );
+}
+
 if ( ! file_exists( $autoload = plugin_dir_path( __FILE__ ) .'vendor/autoload.php' ) ) {
 
   wp_die( __( 'This plugin requires Composer.' ) );
@@ -17,21 +21,10 @@ require $autoload;
 
 $package = json_decode( file_get_contents( __DIR__ . '/composer.json' ), false );
 
-/**
- * Plugin updater
- */
-$plugin_updater = \Puc_v4_Factory::buildUpdateChecker(
-	$package->homepage,
-	__FILE__,
-	$package->name
-);
+$plugin_updater = Puc_v4_Factory::buildUpdateChecker( $package->homepage, __FILE__, $package->name );
 
 $plugin_updater->getVcsApi()->enableReleaseAssets();
 
+$adminFields = json_decode( file_get_contents( __DIR__ . '/includes/admin-fields.json' ), true );
 
-if ( ! class_exists( 'Dfrapi' ) && ! class_exists( 'Dfrcs' ) ) {
-
-  wp_die( 'This plugin relies on datafeedr Comparison Sets plugin.' );
-}
-
-$template = new Noor\DatafeedrExt\Template();
+new Noor\DatafeedrExt\Template( $adminFields );
