@@ -41,8 +41,10 @@ class NoorDFRCSTemplate {
   private $active_network_ids;
 
   public function __construct() {
-    
-    // Makesure to set display type to php in order to have post params available
+
+    $this->options = get_option('dftemplate_settings');
+
+    // Make sure to set display type to php in order to have post params available
     $dfrcs_options = get_option('dfrcs_options');
     if ( $dfrcs_options && $dfrcs_options['display_method'] != 'php' ) {
 
@@ -51,18 +53,6 @@ class NoorDFRCSTemplate {
       update_option( 'dfrcs_options', $dfrcs_options ); 
     }
 
-    add_action( 'admin_menu', [$this, 'register_template_sub_menu_page'], 999 );
-    add_action( 'admin_init', [$this, 'register_template_settings'] );
-    add_filter( 'dfrcs_order', [$this, 'sort_desc'], 99, 2 );
-    add_filter( 'dfrcs_orderby', [$this, 'order_by'], 10, 2 );
-    add_filter( 'dfrcs_title', [$this, 'show_title'], 10, 2 );
-    add_filter( 'dfrcs_image', [$this, 'show_product_image'], 10, 2 );
-    add_filter( 'dfrcs_logo', [$this, 'show_merchant'], 10, 2 );
-    add_filter( 'dfrcs_price', [$this, 'show_price'], 10, 2 );
-    add_filter( 'dfrcs_link', [$this, 'network_uri_extention'], 10, 2 );
-
-    $this->options = get_option('dftemplate_settings');
-    
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
       
       $this->active_network_ids = get_option('dfrapi_networks');
@@ -74,6 +64,18 @@ class NoorDFRCSTemplate {
 
       $this->get_active_networks();
     }
+
+    add_action( 'admin_menu', [$this, 'register_template_sub_menu_page'], 999 );
+    add_action( 'admin_init', [$this, 'register_template_settings'] );
+    add_filter( 'dfrcs_order', [$this, 'sort_desc'], 99, 2 );
+    add_filter( 'dfrcs_orderby', [$this, 'order_by'], 10, 2 );
+    add_filter( 'dfrcs_title', [$this, 'show_title'], 10, 2 );
+    add_filter( 'dfrcs_image', [$this, 'show_product_image'], 10, 2 );
+    add_filter( 'dfrcs_logo', [$this, 'show_merchant'], 10, 2 );
+    add_filter( 'dfrcs_price', [$this, 'show_price'], 10, 2 );
+    add_filter( 'dfrcs_link', [$this, 'network_uri_extention'], 10, 2 );
+    add_filter( 'dfrcs_products', [$this, 'set_num_products'], 10, 2 );
+    // add_filter( 'dfrcs_template', [$this, 'set_template'], 10, 2 );
   }
   
   /**
@@ -97,13 +99,78 @@ class NoorDFRCSTemplate {
   }
 
   /**
+   * get_network_url_extention
+   * 
+   * Constructs epi/sub extention to product uri
+   * 
+   * @param array $product
+   * 
+   * @return string
+   */
+  private function get_network_url_extention ( array $product ): string {
+
+    if ( empty( $extention = $this->options['uri_ext_' . $product['source_id']] ) ) {
+
+      return '';
+    }
+
+    preg_match_all( "/\\{(.*?)\\}/", $extention, $matches, PREG_PATTERN_ORDER );
+    
+    foreach ( $matches[0] as $tag ) {
+
+      switch( $tag ) {
+        case '{page}' :
+          $extention = str_replace( $tag, get_post()->post_name, $extention );
+          break;
+        case '{product}' :
+          $extention = str_replace( $tag, urlencode( $product['name'] ), $extention );
+          break;
+        case '{price}' :
+          $extention = str_replace( $tag, $product['price'], $extention );
+          break;
+        case '{finalprice}' :
+          $extention = str_replace( $tag, $product['finalprice'], $extention );
+          break;
+      }
+    }
+    
+    return '&' . $extention;
+  }
+
+  /**
+   * display
+   * 
+   * @param Dfrcs $dfrcs
+   */
+  private function display ( Dfrcs $dfrcs ) {
+
+    // $extra_args = $dfrcs->source->original;
+
+    // $show_title = ! isset( $this->options['show_title'] );
+
+    // $show_prod_img = ! isset( $this->options['show_prod_img'] );
+
+    // $show_merchant = ! isset( $this->options['show_merchant'] );
+
+    // $show_price = ! isset( $this->options['show_price'] )
+
+    // $num_products = ( isset( $extra_args['display_num'] ) && ! empty( $extra_args['display_num'] ) ) ? $extra_args['display_num'] : -1;
+
+    // $display = ( isset( $extra_args['display'] ) && ! empty( $extra_args['display'] ) ) ? $extra_args['display'] : false;
+
+    // $text = ( isset( $extra_args['text'] ) && ! empty( $extra_args['text'] ) ) ? $extra_args['text'] : false;
+
+    // $html = '';
+  }
+
+  /**
    * register_template_sub_menu_page
    * 
    * Registers sub menu page to Datafeedr API menu page
    * 
    * @return void
    */
-  public function register_template_sub_menu_page () {
+  public function register_template_sub_menu_page (): void {
 
     add_submenu_page( 
       'dfrapi', 
@@ -123,7 +190,7 @@ class NoorDFRCSTemplate {
    * 
    * @return void
    */
-  public function register_template_settings () {
+  public function register_template_settings (): void {
     register_setting( 
       'dftemplate_settings_group', 
       'dftemplate_settings'
@@ -137,29 +204,10 @@ class NoorDFRCSTemplate {
    * 
    * @return void
    */
-  public function template_menu_page_html () {
-
-    $options = $this->options;
-    $active_networks = $this->active_networks;
+  public function template_menu_page_html (): void {
 
     require plugin_dir_path( __FILE__ ) .'/templates/menu-page.php';
   }
-
-  /**
-   * load_custom_template
-   * 
-   * Overrides Datafeedr Comparison Sets default template
-   * 
-   * @param string $template
-   * 
-   * @param Dfrcs $instance
-   * 
-   * @return string
-   */
-  // public function load_custom_template ( string $template, Dfrcs $instance ): string {
-    
-  //   return plugin_dir_path( __FILE__ ) . '/templates/template.php';
-  // }
 
   /**
    * sort_desc
@@ -290,18 +338,84 @@ class NoorDFRCSTemplate {
    */
   public function network_uri_extention( string $url, array $product ): string {
 
-    if ( empty( $extention = $this->options['uri_ext_' . $product['source_id']] ) ) {
+    if ( ! empty( $extention = $this->get_network_url_extention( $product ) ) ) {
 
-      return $url;
+      return $url . $extention;
     }
 
-    $post = get_post()->post_name;
+    return $url;
+  }
 
-    $extention = str_replace( '{page}', $post, $extention );
+  /**
+   * set_num_products
+   * 
+   * Controls product num outputs
+   * 
+   * @param array $products
+   * 
+   * @param Dfrcs $compset
+   * 
+   * @return array
+   */
+  public function set_num_products ( array $products, Dfrcs $compset ): array {
 
-    $extention = str_replace( '{product}', urlencode($product['name']), $extention );
-    
-    return $url . '&' . $extention;
+    $extra = $compset->source->original;
+
+    if ( isset( $extra['display_num'] ) && absint( $extra['display_num'] ) > 0 ) {
+
+      $count = 0;
+      $new_products = [];
+
+      foreach ( $products as $product ) {
+
+        $count++;
+
+        if ( $count > $extra['display_num'] ) {
+
+          break;
+        }
+
+        $new_products[] = $product;
+      }
+
+      return $new_products;
+    }
+
+    return $products;
+  }
+
+  /**
+   * set_template
+   * 
+   * Overrides datafeedr default template if custom filter is present
+   * 
+   * @param string $template
+   * 
+   * @param Dfrcs $instance
+   * 
+   * @return string
+   */
+  public function set_template ( string $template, Dfrcs $instance ): string {
+
+    $args = $instance->source->original;
+
+    if ( isset( $args['display'] ) && ! empty( $args['display'] ) ) {
+
+      $template_path = plugin_dir_path( __FILE__ ) . 'templates';
+
+      switch( $args['display'] ) {
+        case 'button' :
+          $template = $template_path . '/template-button.php';
+          break;
+        case 'text' :
+          $template = $template_path . '/template-text.php';
+          break;
+      }
+
+      return $template;
+    }
+
+    return $template;
   }
 }
 

@@ -29,11 +29,11 @@
         </tr>
         <tr valign="top">
           <th scope="row" valign="top">
-            <?php _e( 'Dsiplay merchants brand/logo' ); ?>
+            <?php _e( 'Dsiplay merchant brand/logo' ); ?>
           </th>
           <td>
             <input id="dftemplate_settings[show_merchant]" name="dftemplate_settings[show_merchant]" type="checkbox" value="1" <?php echo checked( 1, $this->options['show_merchant'], false ); ?> />
-            <label class="description" for="dftemplate_settings[show_merchant]"><?php _e('Check this to display merchants brand/logo.'); ?></label>
+            <label class="description" for="dftemplate_settings[show_merchant]"><?php _e('Check this to display merchant brand/logo.'); ?></label>
           </td>
         </tr>
         <tr valign="top">
@@ -94,7 +94,7 @@
                 : ''
             );
 
-            $html .= '<p>Available placeholders: <code>{page}</code> <code>{product}</code></p>';
+            $html .= '<p>Available placeholders: <code>{page}</code> <code>{product}</code> <code>{price}</code> <code>{finalprice}</code></p>';
 
             $html .= '</td></tr>';
 
