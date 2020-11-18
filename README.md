@@ -2,6 +2,12 @@
 
 This plugin extends the datafeedr comparison sets template with a few set of options.
 
+### Instal
+
+1. Visit [https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/](https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/) and download zip
+2. Upload zip file in wp plugin uploader
+3. Install
+
 ### Additional shortcode params
 
 | Params            | Description                  | Values                   | Default      |

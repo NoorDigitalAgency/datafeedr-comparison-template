@@ -17,7 +17,7 @@ This plugin overrides the Datafeedr Comparison Sets plugin template and enables 
 == Installation ==
 
 
-1. Visit [https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/tag/v1.0.1](https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/tag/v1.0.1) and download zip
+1. Visit [https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/](https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/) and download zip
 2. Upload zip file in wp plugin uploader
 3. Install
 
