@@ -16,8 +16,8 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
       ? $args['display_num']
       : count( $dfrcs_products );
     
-    $button_text = ( isset( $args['text'] ) && !empty( $args['text'] ) )
-      ? $args['text']
+    $button_text = ( isset( $args['display_text'] ) && !empty( $args['display_text'] ) )
+      ? $args['display_text']
       : '';
     
     foreach( $dfrcs_products as $dfrcs_product ) {

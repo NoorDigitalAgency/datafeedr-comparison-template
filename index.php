@@ -75,7 +75,7 @@ class NoorDFRCSTemplate {
     add_filter( 'dfrcs_price', [$this, 'show_price'], 10, 2 );
     add_filter( 'dfrcs_link', [$this, 'network_uri_extention'], 10, 2 );
     add_filter( 'dfrcs_products', [$this, 'set_num_products'], 10, 2 );
-    // add_filter( 'dfrcs_template', [$this, 'set_template'], 10, 2 );
+    add_filter( 'dfrcs_template', [$this, 'set_template'], 10, 2 );
   }
   
   /**
@@ -135,32 +135,6 @@ class NoorDFRCSTemplate {
     }
     
     return '&' . $extention;
-  }
-
-  /**
-   * display
-   * 
-   * @param Dfrcs $dfrcs
-   */
-  private function display ( Dfrcs $dfrcs ) {
-
-    // $extra_args = $dfrcs->source->original;
-
-    // $show_title = ! isset( $this->options['show_title'] );
-
-    // $show_prod_img = ! isset( $this->options['show_prod_img'] );
-
-    // $show_merchant = ! isset( $this->options['show_merchant'] );
-
-    // $show_price = ! isset( $this->options['show_price'] )
-
-    // $num_products = ( isset( $extra_args['display_num'] ) && ! empty( $extra_args['display_num'] ) ) ? $extra_args['display_num'] : -1;
-
-    // $display = ( isset( $extra_args['display'] ) && ! empty( $extra_args['display'] ) ) ? $extra_args['display'] : false;
-
-    // $text = ( isset( $extra_args['text'] ) && ! empty( $extra_args['text'] ) ) ? $extra_args['text'] : false;
-
-    // $html = '';
   }
 
   /**
@@ -399,9 +373,9 @@ class NoorDFRCSTemplate {
 
     $args = $instance->source->original;
 
-    if ( isset( $args['display'] ) && ! empty( $args['display'] ) ) {
+    $template_path = plugin_dir_path( __FILE__ ) . 'templates';
 
-      $template_path = plugin_dir_path( __FILE__ ) . 'templates';
+    if ( isset( $args['display'] ) && ! empty( $args['display'] ) ) {
 
       switch( $args['display'] ) {
         case 'button' :
@@ -410,12 +384,14 @@ class NoorDFRCSTemplate {
         case 'text' :
           $template = $template_path . '/template-text.php';
           break;
+        default :
+          $template = $template_path . '/template-default.php';
       }
 
       return $template;
     }
 
-    return $template;
+    return $template_path . '/template-default.php';
   }
 }
 
