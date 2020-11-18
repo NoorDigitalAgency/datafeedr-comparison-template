@@ -20,7 +20,7 @@ $package = json_decode( file_get_contents( __DIR__ . '/composer.json' ), false )
 /**
  * Plugin updater
  */
-$plugin_updater = Puc_v4_Factory::buildUpdateChecker(
+$plugin_updater = \Puc_v4_Factory::buildUpdateChecker(
 	$package->homepage,
 	__FILE__,
 	$package->name
