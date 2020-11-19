@@ -4,7 +4,7 @@ namespace Noor\DatafeedrExt;
 
 use Noor\DatafeedrExt\Template;
 
-class PublicUI {
+class PublicView {
 
   public function __construct () {
 
@@ -19,7 +19,7 @@ class PublicUI {
    * 
    * @return string
    */
-  protected function getNetworkURIExtention ( array $product ): string {
+  private function getNetworkURIExtention ( array $product ): string {
 
     if ( empty( $extention = Template::getOption( 'uri_ext_' . $product['source_id'] ) ) ) {
 
@@ -55,7 +55,7 @@ class PublicUI {
    * 
    * @return array
    */
-  protected function validateExtraArgs ( array $args ): array {
+  private function validateExtraArgs ( array $args ): array {
 
     $validArgs = [
       'display',
@@ -106,82 +106,6 @@ class PublicUI {
     return ( ! empty( Template::getOption( 'order_by' ) ) ) 
       ? Template::getOption( 'order_by' )
       : $orderby;
-  }
-
-  /**
-   * showTitle
-   * 
-   * @param string $title
-   * 
-   * @param Dfrcs $compset
-   * 
-   * @return string
-   */
-  public function showTitle ( string $title, \Dfrcs $compset ): string {
-
-    if ( false === Template::getOption( 'show_title' ) ) {
-
-      return '';
-    }
-
-    return $title;
-  }
-
-  /**
-   * showImage
-   * 
-   * @param string $title
-   * 
-   * @param array $product
-   * 
-   * @return string
-   */
-  public function showImage ( string $html, array $product ): string {
-
-    if ( false === Template::getOption( 'show_image' ) ) {
-      
-      return '';
-    }
-
-    return $html;
-  }
-
-  /**
-   * showMerchant
-   * 
-   * @param string $title
-   * 
-   * @param array $product
-   * 
-   * @return string
-   */
-  public function showMerchant ( string $html, array $product ): string {
-
-    if ( false === Template::getOption( 'show_merchant' ) ) {
-      
-      return '';
-    }
-
-    return $html;
-  }
-
-  /**
-   * showPrice
-   * 
-   * @param string $title
-   * 
-   * @param array $product
-   * 
-   * @return string
-   */
-  public function showPrice ( string $html, array $product ): string {
-
-    if ( false === Template::getOption( 'show_price' ) ) {
-      
-      return '';
-    }
-
-    return $html;
   }
 
   /**
@@ -242,7 +166,7 @@ class PublicUI {
   }
 
   /**
-   * setTemplate
+   * template
    * 
    * Overrides datafeedr default template if custom filter is present
    * 
@@ -252,28 +176,65 @@ class PublicUI {
    * 
    * @return string
    */
-  public function setTemplate ( string $template, \Dfrcs $instance ): string {
-
+  public function template ( string $template, \Dfrcs $instance ): string {
+    
     $args = $instance->source->original;
 
-    $template_path = plugin_dir_path( __FILE__ ) . 'templates';
-
-    if ( isset( $args['display'] ) && ! empty( $args['display'] ) ) {
-
-      switch( $args['display'] ) {
-        case 'button' :
-          $template = $template_path . '/template-button.php';
-          break;
-        case 'text' :
-          $template = $template_path . '/template-text.php';
-          break;
-        default :
-          $template = $template_path . '/template-default.php';
-      }
-
-      return $template;
-    }
-
-    return $template_path . '/template-default.php';
+    return plugin_dir_path( __FILE__ ) . 'templates/template-default.php';
   }
 }
+
+// $html = '';
+
+//     ob_start();
+
+//     global $compset;
+//     if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) {
+
+//       $html .= sprintf( '<h2>%s</h2>', dfrcs_title() );
+
+//       if ( $dfrcs_products = dfrcs_products() ) {
+
+//         global $dfrcs_product;
+
+//         $row = '<li class="' . dfrcs_row_class() . '">';
+//         foreach ( $dfrcs_products as $dfrcs_product ) {
+
+//           $image = ( false != Template::getOption( 'show_image' )
+//             ? '<div class="dfrcs_image">' . dfrcs_image() . '</div>'
+//             : '' );
+          
+//           $merchant = ( false != Template::getOption( 'show_merchant' )
+//             ? '<div class="dfrcs_logo">' . dfrcs_logo() . '</div>'
+//             : '' );
+
+//           $price = ( Template::getOption( 'show_price' )
+//             ? '<div class="dfrcs_price">' . dfrcs_price() . '</div>'
+//             : '' );
+
+//           $link = '<div class="dfrcs_link"><span class="dfrcs_action">' . dfrcs_link_text() . '</span></div>';
+          
+//           $item = sprintf( 
+//             '<div class="item">%1$s %$2s %3$s %4$s</div>',
+//             $image,
+//             $merchant,
+//             $price,
+//             $link );
+          
+//           $row .= sprintf( 
+//             '<a target="_blank" href="%1$s" rel="nofollow">%2$ s%3$s</a>%4$ s%5$s',
+//             dfrcs_url(),
+//             $item,
+//             dfrcs_promo(), 
+//             dfrcs_product_actions(),
+//             dfrcs_product_debug() );
+//         }
+
+//         $row .= '</li>';
+//       }
+//     }
+
+//     $html .= ob_get_contents();
+//   	ob_end_clean();
+
+//     return $html;

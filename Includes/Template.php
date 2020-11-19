@@ -26,11 +26,11 @@ class Template {
       $this->activeNetworks = $this->setActiveNetworks();
     }
 
-    $admin = new AdminOptions( $this->getActiveNetworks(), $adminFields );
+    $admin = new AdminView( $this->getActiveNetworks(), $adminFields );
     add_action( 'admin_menu', [$admin, 'templateSubMenuPage'], 999 );
     add_action( 'admin_init', [$admin, 'templateFields'] );
 
-    $public = new PublicUI();
+    $public = new PublicView();
     add_filter( 'dfrcs_order',    [$public, 'orderDesc'], 99, 2 );
     add_filter( 'dfrcs_orderby',  [$public, 'orderBy'], 10, 2 );
     add_filter( 'dfrcs_title',    [$public, 'showTitle'], 10, 2 );
@@ -39,7 +39,7 @@ class Template {
     add_filter( 'dfrcs_price',    [$public, 'showPrice'], 10, 2 );
     add_filter( 'dfrcs_link',     [$public, 'networkURIExtention'], 10, 2 );
     add_filter( 'dfrcs_products', [$public, 'setNumProducts'], 10, 2 );
-    add_filter( 'dfrcs_template', [$public, 'setTemplate'], 10, 2 );
+    add_filter( 'dfrcs_template', [$public, 'template'], 10, 2 );
   }
 
   /**

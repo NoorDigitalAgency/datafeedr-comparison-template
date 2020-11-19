@@ -4,7 +4,7 @@ namespace Noor\DatafeedrExt;
 
 use Noor\DatafeedrExt\Template;
 
-class AdminOptions {
+class AdminView {
 
   private $fields;
 
@@ -90,8 +90,11 @@ class AdminOptions {
     
     echo '<div class="wrap" id="tmpl_options">';
 
-    echo sprintf( '<h2>%s</h2>',
-      __( 'Datafeedr Comparison Template' ) );
+    printf( '<h2>%s</h2><p>%s<a href="%s" target="_blank">%s</a></p>',
+      __( 'Datafeedr Comparison Template' ),
+      __( 'All settings apply globaly to comparison template. For single template options refere to extra shortcode args: ' ),
+      'https://github.com/NoorDigitalAgency/datafeedr-comparison-template',
+      __( 'HERE' ) );
 
     echo '<form method="post" action="options.php">';
     

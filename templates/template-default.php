@@ -4,7 +4,7 @@
  */
 
 global $compset;
-
+var_dump('<pre>', $compset, '</pre>');
 if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) : ?>
 
 	<h2><?php echo dfrcs_title(); ?></h2>
