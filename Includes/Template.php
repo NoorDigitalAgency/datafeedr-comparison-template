@@ -4,8 +4,6 @@ namespace Noor\DatafeedrExt;
 
 class Template {
 
-  private static $options;
-
   private $allNetworks;
 
   private $activeNetworks;
@@ -95,11 +93,15 @@ class Template {
    */
   public static function getOption ( string $key ) {
 
-    if ( null === self::$options ) {
-
-      self::$options = get_option( 'tmpl_options' );
-    }
-
-    return ( isset( self::$options[$key] ) ? self::$options[$key] : false );
+    $options = get_option( 'tmpl_options', [
+      'show_title'    => 1,
+      'show_image'    => 1,
+      'show_merchant' => 1,
+      'show_price'    => 1,
+      'order_desc'    => 0,
+      'order_by'      => '',
+    ]);
+    
+    return ( isset( $options[$key] ) ? $options[$key] : false );
   }
 }

@@ -39,11 +39,11 @@ class OptionsField {
   public function createCheckbox () {
 
     printf( 
-      '<input id="' . $this->id . '" name="' . $this->id . '" type="checkbox" value="1" %s />',
-      checked( 1, Template::getOption( $this->option ), false ) );
+      '<input id="' . $this->option . '" name="' . $this->option . '" type="checkbox" value="1" %s />',
+      checked( 1, Template::getOption( $this->id ), false ) );
 
     printf( 
-      '<label class="description" for="' . $this->id . '">%s</label>',
+      '<label class="description" for="' . $this->option . '">%s</label>',
       __( $this->label ) );
   }
 
@@ -66,8 +66,8 @@ class OptionsField {
     }
 
     printf(
-      '<input id="' . $this->id . '" class="regular-text" name="' . $this->id . '" type="text" value="%s" />',
-      ( Template::getOption( $this->option ) ? Template::getOption( $this->option ) : '' ) );
+      '<input id="' . $this->option . '" class="regular-text" name="' . $this->option . '" type="text" value="%s" />',
+      ( Template::getOption( $this->id ) ? Template::getOption( $this->id ) : '' ) );
   
 
     if ( ! empty( $this->description ) ) {

@@ -58,7 +58,7 @@ class PublicView {
    * @return string
    */
   public function orderDesc ( string $order, \Dfrcs $instance ): string {
-    var_dump('<pre>', Template::getOption( 'order_desc' ), '</pre>');
+
     return ( false === Template::getOption( 'order_desc' ) ) 
       ? $order
       : 'desc';
