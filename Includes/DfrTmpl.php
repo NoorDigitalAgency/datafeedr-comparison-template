@@ -153,8 +153,10 @@ abstract class DfrTmpl {
         }
 
         return $acc;
-      }, [] );
+      }, []);
     }
+
+    return $products;
   }
 
   /**

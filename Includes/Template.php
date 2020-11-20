@@ -91,9 +91,7 @@ class Template extends DfrTmpl {
    */
   public function products ( array $products, \Dfrcs $compset ): array {
 
-    $products = $this->getProducts( $products, $compset->sourcs->original );
-
-    return $products;
+    return $this->getProducts( $products, $compset->source->original );
   }
 
   /**
@@ -109,8 +107,8 @@ class Template extends DfrTmpl {
    */
   public function template ( string $template, \Dfrcs $compset ): string {
     
-    $templateName = $this->getTemplate( $compset->source->original );
-
-    return plugin_dir_path( __FILE__ ) . "../templates/template-{$templateName}.php";
+    $template = $this->getTemplate( $compset->source->original );
+  
+    return plugin_dir_path( __FILE__ ) . "../templates/template-{$template}.php";
   }
 }
