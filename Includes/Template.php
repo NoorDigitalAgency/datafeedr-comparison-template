@@ -4,7 +4,7 @@ namespace Noor\DatafeedrExt;
 
 class Template {
 
-  public static $options;
+  private static $options;
 
   private $allNetworks;
 
@@ -12,7 +12,7 @@ class Template {
 
   private $activeNetworksIds;
 
-  public function __construct( $adminFields ) {
+  public function __construct() {
 
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
       
@@ -26,18 +26,14 @@ class Template {
       $this->activeNetworks = $this->setActiveNetworks();
     }
 
-    $admin = new AdminView( $this->getActiveNetworks(), $adminFields );
+    $admin = new Options( $this->getActiveNetworks() );
     add_action( 'admin_menu', [$admin, 'templateSubMenuPage'], 999 );
-    add_action( 'admin_init', [$admin, 'templateFields'] );
+    add_action( 'admin_init', [$admin, 'templateOptions'] );
 
     $public = new PublicView();
     add_filter( 'dfrcs_order',    [$public, 'orderDesc'], 99, 2 );
     add_filter( 'dfrcs_orderby',  [$public, 'orderBy'], 10, 2 );
-    add_filter( 'dfrcs_title',    [$public, 'showTitle'], 10, 2 );
-    add_filter( 'dfrcs_image',    [$public, 'showImage'], 10, 2 );
-    add_filter( 'dfrcs_logo',     [$public, 'showMerchant'], 10, 2 );
-    add_filter( 'dfrcs_price',    [$public, 'showPrice'], 10, 2 );
-    add_filter( 'dfrcs_link',     [$public, 'networkURIExtention'], 10, 2 );
+    add_filter( 'dfrcs_link',     [$public, 'productURIExtention'], 10, 2 );
     add_filter( 'dfrcs_products', [$public, 'setNumProducts'], 10, 2 );
     add_filter( 'dfrcs_template', [$public, 'template'], 10, 2 );
   }
@@ -70,6 +66,27 @@ class Template {
   }
 
   /**
+   * validateArgs
+   * 
+   * @param array $args
+   * 
+   * @return array
+   */
+  public static function validateArgs ( array $args ): array {
+
+    $validArgs = [
+      'display',
+      'display_type',
+      'display_tex'
+    ];
+
+    return array_filter( $args, function ( $arg ) use ( $validArgs ) {
+      
+      return in_array( $arg, $validArgs );
+    });
+  }
+
+  /**
    * getOption
    * 
    * @param string $key
@@ -77,7 +94,7 @@ class Template {
    * @return mixed
    */
   public static function getOption ( string $key ) {
-    
+
     if ( null === self::$options ) {
 
       self::$options = get_option( 'tmpl_options' );

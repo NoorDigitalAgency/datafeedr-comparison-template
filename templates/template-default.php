@@ -3,25 +3,45 @@
  * Custom Datafeedr template
  */
 
-global $compset;
-var_dump('<pre>', $compset, '</pre>');
-if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) : ?>
+ use Noor\DatafeedrExt\Template;
 
-	<h2><?php echo dfrcs_title(); ?></h2>
+global $compset;
+
+if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) :
+
+	if ( 1 === Template::getOption( 'show_title' ) ) {
+		?>
+			<h2><?php echo dfrcs_title(); ?></h2>
+		<?php
+	} ?>
 
 	<ul class="dfrcs_compset">
 		<?php if ( $dfrcs_products = dfrcs_products() ) {
 			
 			global $dfrcs_product;
-
+			
 			foreach ( $dfrcs_products as $dfrcs_product ) {
 				?>
 					<li class="<?php echo dfrcs_row_class(); ?>">
 						<a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
 							<div class="item">
-								<div class="dfrcs_image"><?php echo dfrcs_image(); ?></div>
-								<div class="dfrcs_logo"><?php echo dfrcs_logo(); ?></div>
-								<div class="dfrcs_price"><?php echo dfrcs_price(); ?></div>
+								<?php if ( 1 === Template::getOption( 'show_image' ) ) {
+									?>
+										<div class="dfrcs_image"><?php echo dfrcs_image(); ?></div>
+									<?php
+								}
+								
+								if ( 1 === Template::getOption( 'show_merchant' ) ) {
+									?>
+										<div class="dfrcs_logo"><?php echo dfrcs_logo(); ?></div>
+									<?php
+								}
+
+								if ( 1 === Template::getOption( 'show_price' ) ) {
+									?>
+										<div class="dfrcs_price"><?php echo dfrcs_price(); ?></div>
+									<?php
+								} ?>
 								<div class="dfrcs_link">
 									<span class="dfrcs_action"><?php echo dfrcs_link_text(); ?></span>
 								</div>

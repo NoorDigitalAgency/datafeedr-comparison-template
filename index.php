@@ -25,6 +25,4 @@ $plugin_updater = \Puc_v4_Factory::buildUpdateChecker( $package->homepage, __FIL
 
 $plugin_updater->getVcsApi()->enableReleaseAssets();
 
-$adminFields = json_decode( file_get_contents( __DIR__ . '/admin-fields.json' ), true );
-
-new Noor\DatafeedrExt\Template( $adminFields );
+new Noor\DatafeedrExt\Template();

@@ -6,22 +6,30 @@
       {
         "id": "show_title",
         "title": "Display Table Title",
-        "callback": "showTitleOutput"
+        "callback": "createCheckbox",
+        "label": "Check this to display title.",
+        "description": ""
       },
       {
         "id": "show_image",
         "title": "Display Product Image",
-        "callback": "showImageOutput"
+        "callback": "createCheckbox",
+        "label": "Check this to display image.",
+        "description": ""
       },
       {
         "id": "show_merchant",
         "title": "Display Merchant Logo",
-        "callback": "showMerchantOutput"
+        "callback": "createCheckbox",
+        "label": "Check this to display merchant.",
+        "description": ""
       },
       {
         "id": "show_price",
         "title": "Display Product Price",
-        "callback": "showPriceOutput"
+        "callback": "createCheckbox",
+        "label": "Check this to display price.",
+        "description": ""
       }
     ]
   },
@@ -32,12 +40,17 @@
       {
         "id": "order_desc",
         "title": "Order DESC",
-        "callback": "orderDescOutput"
+        "callback": "createCheckbox",
+        "label": "Check this to order products in DESC order.",
+        "description": ""
       },
       {
         "id": "order_by",
         "title": "Order By",
-        "callback": "orderByOutput"
+        "callback": "createTextField",
+        "label": "",
+        "description": "Available options: ",
+        "options": ["{merchant}", "{finalprice}"]
       }
     ]
   },

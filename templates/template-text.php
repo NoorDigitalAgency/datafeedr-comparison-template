@@ -1,5 +1,7 @@
 <?php
 
+use Noor\DatafeedrExt\Template;
+
 global $compset;
 
 if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset() ) {
@@ -8,29 +10,12 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
 
     global $dfrcs_product;
 
-    $count = 0;
-
-    $args = $compset->source->original;
-
-    $display_num = ( isset( $args['display_num'] ) && !empty( $args['display_num'] ) )
-      ? $args['display_num']
-      : count( $dfrcs_products );
-    
-    $button_text = ( isset( $args['display_text'] ) && !empty( $args['display_text'] ) )
-      ? $args['display_text']
-      : '';
+    Template::validateArgs( $args = $compset->source->original );
     
     foreach( $dfrcs_products as $dfrcs_product ) {
-
-      $count++;
-
-      if ( $count > $display_num ) {
-        break;
-      }
-
       ?>
         <a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
-            <?php echo empty( $button_text ) ? $dfrcs_product['name'] : $button_text; ?>
+            <?php echo isset( $args['display_text'] ) ? $args['display_text'] : $dfrcs_product['name']; ?>
         </a>
         <?php echo dfrcs_product_actions(); ?>
 				<?php echo dfrcs_product_debug(); ?>
