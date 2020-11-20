@@ -2,7 +2,7 @@
 
 namespace Noor\DatafeedrExt;
 
-use Noor\DatafeedrExt\Template;
+use Noor\DatafeedrExt\DfrTmpl;
 
 class OptionsField {
 
@@ -40,7 +40,7 @@ class OptionsField {
 
     printf( 
       '<input id="' . $this->option . '" name="' . $this->option . '" type="checkbox" value="1" %s />',
-      checked( 1, Template::getOption( $this->id ), false ) );
+      checked( 1, DfrTmpl::getOption( $this->id ), false ) );
 
     printf( 
       '<label class="description" for="' . $this->option . '">%s</label>',
@@ -67,7 +67,7 @@ class OptionsField {
 
     printf(
       '<input id="' . $this->option . '" class="regular-text" name="' . $this->option . '" type="text" value="%s" />',
-      ( Template::getOption( $this->id ) ? Template::getOption( $this->id ) : '' ) );
+      ( DfrTmpl::getOption( $this->id ) ? DfrTmpl::getOption( $this->id ) : '' ) );
   
 
     if ( ! empty( $this->description ) ) {

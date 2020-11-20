@@ -2,106 +2,115 @@
 
 namespace Noor\DatafeedrExt;
 
-class Template {
+use Noor\DatafeedrExt\DfrTmpl;
 
-  private $allNetworks;
+use Noor\DatafeedrExt\Options;
 
-  private $activeNetworks;
-
-  private $activeNetworksIds;
+class Template extends DfrTmpl {
 
   public function __construct() {
-
-    if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
-      
-      $this->activeNetworksIds = get_option('dfrapi_networks');
-
-      $this->allNetworks = dfrapi_api_get_all_networks();
-    }
-
-    if ( is_array( $this->activeNetworksIds ) && ! empty( $this->activeNetworksIds ) ) {
-
-      $this->activeNetworks = $this->setActiveNetworks();
-    }
-
-    $admin = new Options( $this->getActiveNetworks() );
-    add_action( 'admin_menu', [$admin, 'templateSubMenuPage'], 999 );
-    add_action( 'admin_init', [$admin, 'templateOptions'] );
-
-    $public = new PublicView();
-    add_filter( 'dfrcs_order',    [$public, 'orderDesc'], 99, 2 );
-    add_filter( 'dfrcs_orderby',  [$public, 'orderBy'], 10, 2 );
-    add_filter( 'dfrcs_link',     [$public, 'productURIExtention'], 10, 2 );
-    add_filter( 'dfrcs_products', [$public, 'setNumProducts'], 10, 2 );
-    add_filter( 'dfrcs_template', [$public, 'template'], 10, 2 );
-  }
-
-  /**
-   * setActiveNetworks
-   * 
-   * Generates array of active networks
-   * 
-   * @return array
-   */
-  private function setActiveNetworks (): array {
-
-    $activeNetworks = array_keys( $this->activeNetworksIds['ids'] );
-      
-    return array_filter( $this->allNetworks, function ( $network ) use ( $activeNetworks ) {
-        
-      return in_array( $network['_id'], $activeNetworks );
-    });
-  }
-
-  /**
-   * getActiveNetworks
-   * 
-   * @return array
-   */
-  public function getActiveNetworks (): array {
-
-    return $this->activeNetworks;
-  }
-
-  /**
-   * validateArgs
-   * 
-   * @param array $args
-   * 
-   * @return array
-   */
-  public static function validateArgs ( array $args ): array {
-
-    $validArgs = [
-      'display',
-      'display_type',
-      'display_tex'
-    ];
-
-    return array_filter( $args, function ( $arg ) use ( $validArgs ) {
-      
-      return in_array( $arg, $validArgs );
-    });
-  }
-
-  /**
-   * getOption
-   * 
-   * @param string $key
-   * 
-   * @return mixed
-   */
-  public static function getOption ( string $key ) {
-
-    $options = get_option( 'tmpl_options', [
-      'show_title'    => 1,
-      'show_image'    => 1,
-      'show_merchant' => 1,
-      'show_price'    => 1,
-      'order_desc'    => 0,
-      'order_by'      => '',
-    ]);
     
-    return ( isset( $options[$key] ) ? $options[$key] : false );
+    $this->dependencies();
+  }
+
+  protected function dependencies () {
+
+    new Options();
+
+    add_filter( 'dfrcs_order',    [$this, 'orderDesc'], 99, 2 );
+    add_filter( 'dfrcs_orderby',  [$this, 'orderBy'], 10, 2 );
+    add_filter( 'dfrcs_link',     [$this, 'uriExtention'], 10, 2 );
+    add_filter( 'dfrcs_products', [$this, 'products'], 10, 2 );
+    add_filter( 'dfrcs_template', [$this, 'template'], 10, 2 );
+  }
+
+  /**
+   * orderDesc
+   * 
+   * Sets products order to either asc|desc
+   * 
+   * @param string $order
+   * 
+   * @param Dfrcs $instance
+   * 
+   * @return string
+   */
+  public function orderDesc ( string $order, \Dfrcs $instance ): string {
+
+    return ( false === $this->getOption( 'order_desc' ) ) 
+      ? $order
+      : 'desc';
+  }
+
+  /**
+   * orderBy
+   * 
+   * Sets products value to order by
+   * 
+   * @param string $order
+   * 
+   * @param Dfrcs $instance
+   * 
+   * @return string
+   */
+  public function orderBy ( string $orderby, \Dfrcs  $instance ): string {
+    
+    return ( ! empty( $this->getOption( 'order_by' ) ) ) 
+      ? $this->getOption( 'order_by' )
+      : $orderby;
+  }
+
+  /**
+   * uriExtention
+   * 
+   * Sets a uri extention to product
+   * 
+   * @param string $title
+   * 
+   * @param array $product
+   * 
+   * @return string
+   */
+  public function uriExtention( string $url, array $product ): string {
+
+    return ( ! empty( $extention = $this->getURIExtention( $product ) ) ) 
+      ? $url . $extention
+      : $url;
+  }
+
+  /**
+   * filterProducts
+   * 
+   * Sets products to render
+   * 
+   * @param array $products
+   * 
+   * @param Dfrcs $compset
+   * 
+   * @return array
+   */
+  public function products ( array $products, \Dfrcs $compset ): array {
+
+    $products = $this->getProducts( $products, $compset->sourcs->original );
+
+    return $products;
+  }
+
+  /**
+   * template
+   * 
+   * Overrides datafeedr default template if custom filter is present
+   * 
+   * @param string $template
+   * 
+   * @param Dfrcs $compset
+   * 
+   * @return string
+   */
+  public function template ( string $template, \Dfrcs $compset ): string {
+    
+    $templateName = $this->getTemplate( $compset->source->original );
+
+    return plugin_dir_path( __FILE__ ) . "../templates/template-{$templateName}.php";
   }
 }

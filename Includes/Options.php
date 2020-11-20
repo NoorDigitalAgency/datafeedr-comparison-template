@@ -4,28 +4,25 @@ namespace Noor\DatafeedrExt;
 
 use Noor\DatafeedrExt\OptionsField;
 
-class Options {
+use Noor\DatafeedrExt\DfrTmpl;
 
+class Options extends DfrTmpl {
+  
   private $fields;
 
-  private $activeNetworks;
+  public function __construct () {
+    
+    $this->dependencies();
+  }
 
-  private $networksCount = 0;
-
-  public function __construct ( $activeNetworks ) {
-
-    $this->activeNetworks = $activeNetworks;
+  protected function dependencies () {
 
     $this->fields = json_decode( file_get_contents( __DIR__ . '/../admin-fields.json' ), true );
 
-    // Make sure to set display type to php in order to have post params available
-    $dfrcs_options = get_option('dfrcs_options');
-    if ( $dfrcs_options && $dfrcs_options['display_method'] != 'php' ) {
+    $this->setDisplayMethod();
 
-      $dfrcs_options['display_method'] = 'php';
-
-      update_option( 'dfrcs_options', $dfrcs_options ); 
-    }
+    add_action( 'admin_menu', [$this, 'templateSubMenuPage'], 999 );
+    add_action( 'admin_init', [$this, 'templateOptions'] );
   }
 
   /**
@@ -57,7 +54,7 @@ class Options {
    */
   public function templateOptions (): void {
     
-    foreach ( $this->activeNetworks as $network ) {
+    foreach ( $this->getActiveNetworks() as $network ) {
       
       $this->fields['tmpl_options_uri']['fields'][] = [
         'id'          => 'uri_ext_' . $network['_id'],
@@ -73,11 +70,22 @@ class Options {
 
     foreach ( $this->fields as $section => $set ) {
 
-      add_settings_section( $section, __( $set['title'] ), [$this, $set['callback']], 'tmpl_options' );
+      add_settings_section( 
+        $section, 
+        __( $set['title'] ), 
+        [$this, $set['callback']], 
+        'tmpl_options' 
+      );
 
       foreach ( $set['fields'] as $field ) {
         
-        add_settings_field( $field['id'], __( $field['title'] ), [new OptionsField( 'tmpl_options', $field ), $field['callback']], 'tmpl_options', $section );
+        add_settings_field( 
+          $field['id'], 
+          __( $field['title'] ), 
+          [new OptionsField( 'tmpl_options', $field ), $field['callback']], 
+          'tmpl_options', 
+          $section 
+        );
       }
     }
   }
