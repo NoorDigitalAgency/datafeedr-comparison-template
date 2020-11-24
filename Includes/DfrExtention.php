@@ -2,7 +2,7 @@
 
 namespace Noor\DatafeedrExt;
 
-abstract class DfrTmpl {
+abstract class DfrExtention {
 
   /**
    * dependencies
@@ -48,6 +48,7 @@ abstract class DfrTmpl {
       'show_price'    => 1,
       'order_desc'    => 0,
       'order_by'      => '',
+      'log'           => []
     ]);
     
     return ( isset( $options[$key] ) ? $options[$key] : false );
@@ -109,6 +110,33 @@ abstract class DfrTmpl {
   }
 
   /**
+   * getWarnings
+   * 
+   * Looks at log option and constructs an array with unique entries
+   * 
+   * @return array|string
+   */
+  protected function getWarnings () {
+
+    if ( $log = $this->getOption( 'log' ) ) {
+      return array_map( function( $page ) use ( $log ) {
+
+        return [
+          'page' => $page,
+          'sets' => count( $log[$page] ),
+          'permalink' => add_query_arg(
+            'dfrtmpl_log',
+            end( array_keys($log[$page] )),
+            get_the_permalink( end( $log[$page] ) )
+          )
+        ];
+      }, array_keys( $log ) ); 
+    }
+
+    return 'No empty sets';
+  }
+
+  /**
    * getActiveNetworks
    * 
    * Generates array of active networks
@@ -126,6 +154,7 @@ abstract class DfrTmpl {
         return in_array( $network['_id'], $activeNetworks );
       });
     }
+    return [];
   }
 
   /**

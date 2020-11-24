@@ -2,11 +2,9 @@
 
 namespace Noor\DatafeedrExt;
 
-use Noor\DatafeedrExt\DfrTmpl;
+use Noor\DatafeedrExt\{DfrExtention, Options};
 
-use Noor\DatafeedrExt\Options;
-
-class Template extends DfrTmpl {
+class Template extends DfrExtention {
 
   public function __construct() {
     

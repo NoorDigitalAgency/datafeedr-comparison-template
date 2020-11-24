@@ -2,11 +2,9 @@
 
 namespace Noor\DatafeedrExt;
 
-use Noor\DatafeedrExt\OptionsField;
+use Noor\DatafeedrExt\{DfrExtention, OptionsField};
 
-use Noor\DatafeedrExt\DfrTmpl;
-
-class Options extends DfrTmpl {
+class Options extends DfrExtention {
   
   private $fields;
 
@@ -21,8 +19,82 @@ class Options extends DfrTmpl {
 
     $this->setDisplayMethod();
 
-    add_action( 'admin_menu', [$this, 'templateSubMenuPage'], 999 );
-    add_action( 'admin_init', [$this, 'templateOptions'] );
+    add_action( 'admin_menu', [$this, 'addAdminPage'], 999 );
+    add_action( 'admin_init', [$this, 'createAdminOptions'] );
+    add_action( 'admin_init', [$this, 'checkLog'], 99 );
+    add_filter( 'dfrcs_no_results_message', [$this, 'noResults'], 10, 2 );
+    add_filter( 'add_menu_classes', [$this, 'alertEmptysets'], 999 );
+  }
+
+  /**
+   * noResults
+   * 
+   * @param string $message
+   * 
+   * @param Dfrcs $compset
+   */
+  public function noResults ( string $message, \Dfrcs $compset ) {
+
+    $page = get_the_title( $compset->source->original['post_id'] );
+        
+    $options = get_option( 'tmpl_options' );
+    
+    if ( ! in_array( md5( $compset->date_created ), $options['log'][$page] ) ) {
+
+      $options['log'][$page][md5($compset->date_created)] = $compset->source->original['post_id'];
+  
+      update_option( 'tmpl_options', $options );
+    }
+
+    return $message;
+  }
+
+  public function checkLog () {
+
+    if ( isset( $_GET['dfrtmpl_log'] ) ) {
+
+      $options = get_option( 'tmpl_options' );
+
+      if ( $options['log'][$_GET['post']][$_GET['dfrtmpl_log']] ) {
+
+        unset( $options['log'][$_GET['post']][$_GET['dfrtmpl_log']] );
+
+        update_option( 'tmpl_options', $options );
+      }
+    }
+  }
+
+  public function alertEmptysets ( $menu ) {
+
+    $dfrMenu = array_filter( $menu, function ( $item ) {
+
+      $found = false;
+      foreach ( $item as $settings ) {
+
+        if ( 'datafeedr api' === strtolower( $settings ) ) {
+
+          $found = true;
+          break;
+        }
+      }
+
+      return $found === true;
+    });
+
+    $log = $this->getOption( 'log' );
+
+    if ( is_array( $log = $this->getWarnings() ) ) {
+      
+      $count = count( $log );
+
+      $key = array_keys( $dfrMenu );
+
+      $index = end( $key );
+      
+      $menu[$index][0] .= ' <span class="update-plugins count-' . $count . '"><span class="plugin-count">' . (string) $count . '</span></span>';
+    }
+    
+    return $menu;
   }
 
   /**
@@ -32,7 +104,7 @@ class Options extends DfrTmpl {
    * 
    * @return void
    */
-  public function templateSubMenuPage (): void {
+  public function addAdminPage (): void {
 
     add_submenu_page( 
       'dfrapi', 
@@ -40,22 +112,24 @@ class Options extends DfrTmpl {
       __( 'Template Options' ),
       'manage_options',
       'tmpl_options',
-      [$this, 'optionsOutput'],
+      [$this, 'renderAdminPage'],
       NULL
     );
   }
 
   /**
+   * 
    * templateFields
    * 
    * Registers page options group for storing settings
    * 
    * @return void
    */
-  public function templateOptions (): void {
+  public function createAdminOptions (): void {
     
     foreach ( $this->getActiveNetworks() as $network ) {
       
+      // Add field input on each active network
       $this->fields['tmpl_options_uri']['fields'][] = [
         'id'          => 'uri_ext_' . $network['_id'],
         'title'       => ( 'AffiliateWindow' == $network['group'] ) ? 'Awin' : $network['group'],
@@ -97,9 +171,21 @@ class Options extends DfrTmpl {
    * 
    * @return string
    */
-  public function optionsOutput () {
+  public function renderAdminPage () {
     
     echo '<div class="wrap" id="tmpl_options">';
+
+    if ( is_array( $warnings = $this->getWarnings() ) ) {
+
+      foreach ( $warnings as $warning ) {
+
+        printf(
+          '<div style="display: block;" class="update-nag notice notice-warning">%s <a href="%s">moderate</a></div>',
+          'Page: <strong>' . $warning['page'] . '</strong> is displaying ' . $warning['sets'] . ' sets with no products.',
+          $warning['permalink']
+        );
+      }
+    }
 
     printf( '<h2>%s</h2><p>%s<a href="%s" target="_blank">%s</a></p>',
       __( 'Datafeedr Comparison Template' ),

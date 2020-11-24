@@ -1,6 +1,6 @@
 <?php
 
-use Noor\DatafeedrExt\DfrTmpl;
+use Noor\DatafeedrExt\DfrExtention;
 
 global $compset;
 
@@ -10,7 +10,7 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
 
     global $dfrcs_product;
 
-    DfrTmpl::getArgs( $args = $compset->source->original );
+    DfrExtention::getArgs( $args = $compset->source->original );
     
     foreach( $dfrcs_products as $dfrcs_product ) {
       ?>
