@@ -35,12 +35,6 @@ fi
 
 cd $GITPATH
 
-echo
-echo "Building..."
-echo
-
-npm run build
-
 git add .
 
 echo
@@ -61,9 +55,9 @@ git tag v$VERSION
 echo
 echo "Pushing latest commit to origin with tags"
 
-git push origin master
+git push origin main
 
-git push origin master --tags
+git push origin main --tags
 
 
 echo
