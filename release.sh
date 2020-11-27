@@ -6,7 +6,7 @@ STABLE="$2"
 
 CURRENTDIR=`pwd`
 
-MAINFILE="blocks.php"
+MAINFILE="datafeedr-comparison-template.php"
 
 GITPATH="$CURRENTDIR"
 
