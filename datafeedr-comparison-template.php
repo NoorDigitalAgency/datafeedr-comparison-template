@@ -2,19 +2,19 @@
 /**
  * Plugin Name: Datafeedr Comparison Template
  * Description: Template extention options to datafeedr Comparison Sets
- * Version: 0.0.1
+ * Version: 1.0.0
  * Author: Noor Digital Agency
  * Author URI: https://noordigital.com 
  */
 
-// if ( ! class_exists( 'Dfrapi' ) && ! class_exists( 'Dfrcs' ) ) {
+if ( ! class_exists( 'Dfrapi' ) && ! class_exists( 'Dfrcs' ) ) {
 
 //   wp_die( 'This plugin relies on datafeedr Comparison Sets plugin.' );
-// }
+}
 
 if ( ! file_exists( $autoload = __DIR__ .'/vendor/autoload.php' ) ) {
 
-  wp_die( __( 'This plugin requires Composer.' ) );
+//   wp_die( __( 'This plugin requires Composer.' ) );
 }
 
 require $autoload;

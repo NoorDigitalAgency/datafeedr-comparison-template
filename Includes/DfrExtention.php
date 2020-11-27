@@ -4,6 +4,16 @@ namespace Noor\DatafeedrExt;
 
 abstract class DfrExtention {
 
+  protected static $defaultOptions = [
+    'show_title'    => 1,
+    'show_image'    => 1,
+    'show_merchant' => 1,
+    'show_price'    => 1,
+    'order_desc'    => 0,
+    'order_by'      => '',
+    'log'           => []
+  ];
+
   /**
    * dependencies
    * 
@@ -41,15 +51,7 @@ abstract class DfrExtention {
    */
   public static function getOption ( string $key ) {
 
-    $options = get_option( 'tmpl_options', [
-      'show_title'    => 1,
-      'show_image'    => 1,
-      'show_merchant' => 1,
-      'show_price'    => 1,
-      'order_desc'    => 0,
-      'order_by'      => '',
-      'log'           => []
-    ]);
+    $options = get_option( 'tmpl_options', self::$defaultOptions );
     
     return ( isset( $options[$key] ) ? $options[$key] : false );
   }
@@ -119,21 +121,19 @@ abstract class DfrExtention {
   protected function getWarnings () {
 
     if ( $log = $this->getOption( 'log' ) ) {
-      return array_map( function( $page ) use ( $log ) {
+
+      return array_map( function( $id ) use ( $log ) {
 
         return [
-          'page' => $page,
-          'sets' => count( $log[$page] ),
-          'permalink' => add_query_arg(
-            'dfrtmpl_log',
-            end( array_keys($log[$page] )),
-            get_the_permalink( end( $log[$page] ) )
-          )
+          'page_id' => $id,
+          'warnings' => count( $log[$id] ),
+          'permalink' => get_the_permalink( $id ),
+          'editlink'  => wp_nonce_url( get_edit_post_link( $id ), 'edit' )
         ];
       }, array_keys( $log ) ); 
     }
 
-    return 'No empty sets';
+    return 'No warnings';
   }
 
   /**
@@ -146,13 +146,16 @@ abstract class DfrExtention {
   protected function getActiveNetworks (): array {
 
     if ( function_exists( 'dfrapi_api_get_all_networks' ) ) {
-    
-      $activeNetworks = array_keys( get_option('dfrapi_networks')['ids'] );
       
-      return array_filter( dfrapi_api_get_all_networks(), function ( $network ) use ( $activeNetworks ) {
-          
-        return in_array( $network['_id'], $activeNetworks );
-      });
+      if ( $networks = get_option( 'dfrapi_networks' ) ) {
+
+        $activeNetworks = array_keys( $networks['ids'] );
+        
+        return array_filter( dfrapi_api_get_all_networks(), function ( $network ) use ( $activeNetworks ) {
+            
+          return in_array( $network['_id'], $activeNetworks );
+        });
+      }
     }
     return [];
   }

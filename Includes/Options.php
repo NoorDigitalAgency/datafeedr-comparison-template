@@ -2,7 +2,7 @@
 
 namespace Noor\DatafeedrExt;
 
-use Noor\DatafeedrExt\{DfrExtention, OptionsField};
+use Noor\DatafeedrExt\{DfrExtention, OptionsField, AdminAlert};
 
 class Options extends DfrExtention {
   
@@ -19,82 +19,10 @@ class Options extends DfrExtention {
 
     $this->setDisplayMethod();
 
+    new AdminAlert();
+
     add_action( 'admin_menu', [$this, 'addAdminPage'], 999 );
     add_action( 'admin_init', [$this, 'createAdminOptions'] );
-    add_action( 'admin_init', [$this, 'checkLog'], 99 );
-    add_filter( 'dfrcs_no_results_message', [$this, 'noResults'], 10, 2 );
-    add_filter( 'add_menu_classes', [$this, 'alertEmptysets'], 999 );
-  }
-
-  /**
-   * noResults
-   * 
-   * @param string $message
-   * 
-   * @param Dfrcs $compset
-   */
-  public function noResults ( string $message, \Dfrcs $compset ) {
-
-    $page = get_the_title( $compset->source->original['post_id'] );
-        
-    $options = get_option( 'tmpl_options' );
-    
-    if ( ! in_array( md5( $compset->date_created ), $options['log'][$page] ) ) {
-
-      $options['log'][$page][md5($compset->date_created)] = $compset->source->original['post_id'];
-  
-      update_option( 'tmpl_options', $options );
-    }
-
-    return $message;
-  }
-
-  public function checkLog () {
-
-    if ( isset( $_GET['dfrtmpl_log'] ) ) {
-
-      $options = get_option( 'tmpl_options' );
-
-      if ( $options['log'][$_GET['post']][$_GET['dfrtmpl_log']] ) {
-
-        unset( $options['log'][$_GET['post']][$_GET['dfrtmpl_log']] );
-
-        update_option( 'tmpl_options', $options );
-      }
-    }
-  }
-
-  public function alertEmptysets ( $menu ) {
-
-    $dfrMenu = array_filter( $menu, function ( $item ) {
-
-      $found = false;
-      foreach ( $item as $settings ) {
-
-        if ( 'datafeedr api' === strtolower( $settings ) ) {
-
-          $found = true;
-          break;
-        }
-      }
-
-      return $found === true;
-    });
-
-    $log = $this->getOption( 'log' );
-
-    if ( is_array( $log = $this->getWarnings() ) ) {
-      
-      $count = count( $log );
-
-      $key = array_keys( $dfrMenu );
-
-      $index = end( $key );
-      
-      $menu[$index][0] .= ' <span class="update-plugins count-' . $count . '"><span class="plugin-count">' . (string) $count . '</span></span>';
-    }
-    
-    return $menu;
   }
 
   /**
@@ -175,14 +103,16 @@ class Options extends DfrExtention {
     
     echo '<div class="wrap" id="tmpl_options">';
 
-    if ( is_array( $warnings = $this->getWarnings() ) ) {
+    if ( is_array( $log = $this->getWarnings() ) ) {
 
-      foreach ( $warnings as $warning ) {
+      foreach ( $log as $warning ) {
 
         printf(
-          '<div style="display: block;" class="update-nag notice notice-warning">%s <a href="%s">moderate</a></div>',
-          'Page: <strong>' . $warning['page'] . '</strong> is displaying ' . $warning['sets'] . ' sets with no products.',
-          $warning['permalink']
+          '<div style="display: block;" class="update-nag notice notice-warning">Page: <strong>%s</strong> is displaying %s sets with no products. <a href="%s" target="_blank">inspect</a> <a href="%s">dismiss</a></div>',
+          get_the_title( $warning['page_id'] ),
+          $warning['warnings'],
+          $warning['permalink'],
+          $warning['editlink']
         );
       }
     }
@@ -233,6 +163,6 @@ class Options extends DfrExtention {
   public function uriSectionOutput () {
 
     printf( '<p>%s</p>', 
-      __( 'These settings control appending query parameter to product url  .' ) );
+      __( 'These settings control appending query parameter to product url.' ) );
   }
 }

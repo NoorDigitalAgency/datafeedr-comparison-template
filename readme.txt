@@ -12,10 +12,10 @@ Template override for Datafeedr Comparison Sets by Noor Digital Agency.
 
 == Description ==
 
-This plugin overrides the Datafeedr Comparison Sets plugin template and enables dynamic fields
+This plugin extends the Datafeedr Comparison Sets plugin.
+Allows for some custom templates annd options
 
 == Installation ==
-
 
 1. Visit [https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/](https://github.com/NoorDigitalAgency/datafeedr-comparison-template/releases/) and download zip
 2. Upload zip file in wp plugin uploader
