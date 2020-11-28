@@ -108,11 +108,11 @@ class Options extends DfrExtention {
       foreach ( $log as $warning ) {
 
         printf(
-          '<div style="display: block;" class="update-nag notice notice-warning">Page: <strong>%s</strong> is displaying %s sets with no products. <a href="%s" target="_blank">inspect</a> <a href="%s">dismiss</a></div>',
+          '<div style="display: block;" class="update-nag notice notice-warning">Page: <strong>%s</strong> is displaying %s sets with no products. <a href="%s" target="_blank">inspect</a></div>',
           get_the_title( $warning['page_id'] ),
           $warning['warnings'],
           $warning['permalink'],
-          $warning['editlink']
+          // $warning['editlink']
         );
       }
     }
