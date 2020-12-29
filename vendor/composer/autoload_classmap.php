@@ -7,4 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Noor\\DatafeedrExt\\AdminAlert' => $baseDir . '/includes/AdminAlert.php',
+    'Noor\\DatafeedrExt\\DfrExtention' => $baseDir . '/includes/DfrExtention.php',
+    'Noor\\DatafeedrExt\\Options' => $baseDir . '/includes/Options.php',
+    'Noor\\DatafeedrExt\\OptionsField' => $baseDir . '/includes/OptionsField.php',
+    'Noor\\DatafeedrExt\\Template' => $baseDir . '/includes/Template.php',
 );
