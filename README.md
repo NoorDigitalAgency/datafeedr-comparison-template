@@ -10,12 +10,13 @@ This plugin extends the datafeedr comparison sets template with a few set of opt
 
 ### Additional shortcode params
 
-| Params            | Description                  | Values                   | Default      |
-|-------------------|:----------------------------:|:------------------------:|:------------:|
-| display           | Display button or text link  | (string) button / text   | table              
-| display_num       | How many products to show    | (number)                 | -1
-| display_text      | This text goes as link or    | (string) any             | Product name
-|                   | button text                  |                          |
+| Params            | Description                    | Values                   | Default      |
+|-------------------|:------------------------------:|:------------------------:|:------------:|
+| display           | Display button or text link    | (string) button / text   | table              
+| display_num       | How many products to show      | (number)                 | -1
+| display_text      | This text goes as link or button text | (string) any      | Product name
+| display_class     | Prints css selector to element | (string) any             | empty string
+| display_styles    | Accepts a css string, key value seperated by ":" and each entry/property seperated with ",". example "color:red, background:blue" | (string)  | empty string
 
 #### example usage to display only first product as button link
 ```
