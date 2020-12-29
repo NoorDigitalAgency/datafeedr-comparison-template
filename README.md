@@ -20,5 +20,5 @@ This plugin extends the datafeedr comparison sets template with a few set of opt
 
 #### example usage to display only first product as button link
 ```
-[dfrcs name="product name" display="button" display_text="Im a button" display_num="1"] 
+[dfrcs name="product name" display="button" display_text="Im a button" display_num="1" display_class="css-selector" display_styles="color:red, background:blue"] 
 ```
