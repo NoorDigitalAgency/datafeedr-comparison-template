@@ -20,17 +20,17 @@ class ComposerStaticInit5e39eaab316c1a4dca9f2e46720bd47e
     public static $prefixDirsPsr4 = array (
         'Noor\\DatafeedrExt\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/includes',
+            0 => __DIR__ . '/../..' . '/Includes',
         ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Noor\\DatafeedrExt\\AdminAlert' => __DIR__ . '/../..' . '/includes/AdminAlert.php',
-        'Noor\\DatafeedrExt\\DfrExtention' => __DIR__ . '/../..' . '/includes/DfrExtention.php',
-        'Noor\\DatafeedrExt\\Options' => __DIR__ . '/../..' . '/includes/Options.php',
-        'Noor\\DatafeedrExt\\OptionsField' => __DIR__ . '/../..' . '/includes/OptionsField.php',
-        'Noor\\DatafeedrExt\\Template' => __DIR__ . '/../..' . '/includes/Template.php',
+        'Noor\\DatafeedrExt\\AdminAlert' => __DIR__ . '/../..' . '/Includes/AdminAlert.php',
+        'Noor\\DatafeedrExt\\DfrExtention' => __DIR__ . '/../..' . '/Includes/DfrExtention.php',
+        'Noor\\DatafeedrExt\\Options' => __DIR__ . '/../..' . '/Includes/Options.php',
+        'Noor\\DatafeedrExt\\OptionsField' => __DIR__ . '/../..' . '/Includes/OptionsField.php',
+        'Noor\\DatafeedrExt\\Template' => __DIR__ . '/../..' . '/Includes/Template.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

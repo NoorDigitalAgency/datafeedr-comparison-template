@@ -18,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Noor\\DatafeedrExt\\": "includes/"
+      "Noor\\DatafeedrExt\\": "Includes/"
     }
   }
 }
