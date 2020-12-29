@@ -1,9 +1,14 @@
 {
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "83432e3ffac596620b8f62c6b306cbec",
     "packages": [
         {
             "name": "yahnis-elsts/plugin-update-checker",
             "version": "v4.10",
-            "version_normalized": "4.10.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/YahnisElsts/plugin-update-checker.git",
@@ -19,9 +24,7 @@
                 "ext-json": "*",
                 "php": ">=5.2.0"
             },
-            "time": "2020-08-21T11:36:45+00:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "load-v4p10.php"
@@ -47,9 +50,22 @@
                 "theme updates",
                 "wordpress"
             ],
-            "install-path": "../../../../../Wordpress/Plugins/datafeedr-comparison-template/vendor/yahnis-elsts/plugin-update-checker"
+            "support": {
+                "issues": "https://github.com/YahnisElsts/plugin-update-checker/issues",
+                "source": "https://github.com/YahnisElsts/plugin-update-checker/tree/wp55-auto-updates"
+            },
+            "time": "2020-08-21T11:36:45+00:00"
         }
     ],
-    "dev": true,
-    "dev-package-names": []
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.1"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

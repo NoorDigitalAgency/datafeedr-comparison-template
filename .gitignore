@@ -9,7 +9,7 @@ yarn-error.log*
 coverage
 
 # Dependency directories
-composer.lock
+# composer.lock
 
 # Optional npm cache directory
 .npm
