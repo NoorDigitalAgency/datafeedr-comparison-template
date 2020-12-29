@@ -69,14 +69,53 @@ abstract class DfrExtention {
     
     $validArgs = [
       'display',
-      'display_type',
-      'display_tex'
+      'display_num',
+      'display_text',
+      'display_class',
+      'display_styles'
     ];
 
     return array_filter( $args, function ( $arg ) use ( $validArgs ) {
       
       return in_array( $arg, $validArgs );
     });
+  }
+
+  /**
+   * getStyles
+   * 
+   * parse style arg input and returns a style string
+   * 
+   * @param array $args
+   * 
+   * @return string
+   */
+  public static function getStyles ( array $args ): string {
+
+    if ( isset( $args['display_styles'] ) && ! empty( $args['display_styles'] ) ) {
+
+      $styles = explode( ',', $args['display_styles'] );
+
+      return implode( ';', $styles );
+    }
+
+    return '';
+  }
+
+  /**
+   * getClassName
+   * 
+   * returns the args classname
+   * 
+   * @param array $args
+   * 
+   * @return string
+   */
+  public static function getClassName ( array $args ): string {
+
+    return isset( $args['display_class'] ) && ! empty( $args['display_class'] ) 
+      ? $args['display_class']
+      : '';
   }
 
   /**
