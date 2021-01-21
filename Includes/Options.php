@@ -100,8 +100,11 @@ class Options extends DfrExtention {
    * @return string
    */
   public function renderAdminPage () {
-    
-    echo '<div class="wrap" id="tmpl_options">';
+
+    global $wpdb;
+
+    echo '<div style="display: flex; width: 100%">';
+    echo '<div class="wrap" id="tmpl_options" style="flex: 1 1 50%;">';
 
     if ( is_array( $log = $this->getWarnings() ) ) {
 
@@ -131,6 +134,50 @@ class Options extends DfrExtention {
     echo submit_button();
 
     echo '</form></div>';
+
+    $prefix = $wpdb->prefix . DFRCS_TABLE;
+    
+    $results = $wpdb->get_results( "SELECT * FROM $prefix", ARRAY_A );
+
+    $pages = array_reduce( $results, function( $acc, $curr ) use ( $results ) {
+      
+      $log = maybe_unserialize( $curr['log'] );
+      
+      $page = get_the_title( $log['original_source']['post_id'] );
+
+      $acc[$page][] = $log['original_source'];
+
+      return $acc;
+      
+    }, []);
+    
+    echo '<div class="wrap" style="flex: 1 1 50%; border-left: 1px solid #ddd; padding-left: 1rem; height: 100vh; overflow-y: scroll;">';
+    
+    foreach ( $pages as $title => $sources ) {
+      
+      echo '<h2>' . $title . '</h2>';
+    
+      foreach ( $sources as $source ) {
+
+        echo '<h4>' . $source['name'] . '</h4>';
+        echo '<hr/>';
+        ?>
+        <form action="update_set" id="1">
+          <input type="checkbox" />
+          <input type="checkbox" />
+          <input type="checkbox" />
+          <input type="text" />
+          <select></select>
+          <textarea></textarea>
+          <?php var_dump('<pre>', $source, '</pre>'); ?>
+          <input type="submit" name="" class="button button-primary" value="Save Changes" />
+          <a class="button button-secondary" role="button" href="<?php echo get_the_permalink( $source['post_id']); ?>" target="_blank">Inspect</a>
+        </form>
+        <?php
+      }
+    }
+    echo '</div>';
+    echo '<div>';
   }
 
   /**
