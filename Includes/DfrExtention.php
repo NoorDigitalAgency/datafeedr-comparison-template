@@ -70,6 +70,7 @@ abstract class DfrExtention {
     $validArgs = [
       'display',
       'display_num',
+      'display_at_position',
       'display_text',
       'display_class',
       'display_styles'
@@ -136,6 +137,9 @@ abstract class DfrExtention {
       switch ( $args['display'] ) {
         case 'text' :
           $template = 'text';
+          break;
+        case 'card' :
+          $template = 'card';
           break;
         case 'button' :
           $template = 'button';
@@ -213,6 +217,17 @@ abstract class DfrExtention {
   protected function getProducts ( array $products, array $args ): array {
 
     $this->getArgs( $args );
+
+    if ( isset( $args['display_at_position'] ) && ! empty( $args['display_at_position'] ) ) {
+      
+      $products = array_filter( $products, function( $productId ) use ( $products, $args ) {
+        
+        $filter = explode( ',', $args['display_at_position'] );
+        $index = array_search( $productId, array_keys( $products ) );
+
+        return in_array( $index + 1, array_keys( $filter ) );
+      }, ARRAY_FILTER_USE_KEY );
+    }
 
     if ( isset( $args['display_num'] ) && absint( $args['display_num'] ) > 0 ) {
 

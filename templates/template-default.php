@@ -24,6 +24,7 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
 								<?php 
 									if ( 1 == DfrExtention::getOption( 'show_image' ) ) echo '<div class="dfrcs_image">' . dfrcs_image() . '</div>';
 									if ( 1 == DfrExtention::getOption( 'show_merchant' ) ) echo '<div class="dfrcs_logo">' . dfrcs_logo() . '</div>';
+									if ( 1 == DfrExtention::getOption( 'show_name' ) ) echo '<div class="dfrcs_name">' . $dfrcs_product['name'] . '</div>';
 									if ( 1 == DfrExtention::getOption( 'show_price' ) ) echo '<div class="dfrcs_price">' . dfrcs_price() . '</div>'; 
 								?>
 								<div class="dfrcs_link">

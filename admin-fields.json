@@ -25,6 +25,13 @@
         "description": ""
       },
       {
+        "id": "show_name",
+        "title": "Display Product Name",
+        "callback": "createCheckbox",
+        "label": "Check this to display product name.",
+        "description": ""
+      },
+      {
         "id": "show_price",
         "title": "Display Product Price",
         "callback": "createCheckbox",
