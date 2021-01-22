@@ -14,15 +14,17 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
     
     foreach( $dfrcs_products as $dfrcs_product ) {
       ?>
-        <article class="<?php echo DfrExtention::getClassName( $args ); ?>" style="<?php echo DfrExtention::getStyles( $args ); ?>">
-          <?php echo dfrcs_image(); ?>
+        <article class="dfrcs_card <?php echo DfrExtention::getClassName( $args ); ?>" style="<?php echo DfrExtention::getStyles( $args ); ?>">
+          <div class="dfrcs_card-img-wrapper"> 
+            <?php echo dfrcs_image(); ?>
+          </div>
           <h3><?php echo $dfrcs_product['name']; ?></h3>
           
-          <a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
-            <button>
-              <?php echo dfrcs_link_text(); ?>
-            </button>
-          </a>
+          <a class="dfrcs_link" target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
+          <span class="dfrcs_action">
+            <?php echo isset( $args['display_text'] ) ? $args['display_text'] : dfrcs_link_text(); ?>
+          </span>
+        </a>
         </article>
         
         <?php echo dfrcs_product_actions(); ?>

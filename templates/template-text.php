@@ -14,7 +14,7 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
     
     foreach( $dfrcs_products as $dfrcs_product ) {
       ?>
-        <a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow" class="<?php echo DfrExtention::getClassName( $args ); ?>" style="<?php echo DfrExtention::getStyles( $args ); ?>">
+        <a target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow" class="dfrcs_link link <?php echo DfrExtention::getClassName( $args ); ?>" style="<?php echo DfrExtention::getStyles( $args ); ?>">
             <?php echo isset( $args['display_text'] ) ? $args['display_text'] : $dfrcs_product['name']; ?>
         </a>
         <?php echo dfrcs_product_actions(); ?>
