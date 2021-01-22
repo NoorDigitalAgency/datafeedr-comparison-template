@@ -22,7 +22,7 @@ if ( $compset->meets_min_num_product_requirement() || dfrcs_can_manage_compset()
           
           <a class="dfrcs_link" target="_blank" href="<?php echo dfrcs_url(); ?>" rel="nofollow">
           <span class="dfrcs_action">
-            <?php echo isset( $args['display_text'] ) ? $args['display_text'] : $dfrcs_product['name']; ?>
+            <?php echo isset( $args['display_text'] ) ? $args['display_text'] : dfrcs_link_text(); ?>
           </span>
         </a>
         </article>
