@@ -3,7 +3,7 @@ Contributors:
 Tags:              datafeedr
 Requires at least: 5.3.2
 Tested up to:      5.3.3
-Stable tag:        1.1.0
+Stable tag:        1.2.0
 Requires PHP:      7.0.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -41,5 +41,10 @@ Allows for some custom templates annd options
 * Added css selector option to shortcode
 * Added styles option to shortcode
 * Example: [dfrcs display_styles="color:red, background:blue" display_class="some-classname"]
+
+= 1.2.0 =
+* Added card template to display option as display="card"
+* Added plugin base styles
+* Added select at position to target any product to display from compset by specifying: display_at_possition="1,4,5"
 
 == Arbitrary section ==

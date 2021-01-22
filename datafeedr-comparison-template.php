@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Datafeedr Comparison Template
  * Description: Template extention options to datafeedr Comparison Sets
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Noor Digital Agency
  * Author URI: https://noordigital.com 
  */
