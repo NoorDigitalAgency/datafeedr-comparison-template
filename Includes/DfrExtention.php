@@ -8,6 +8,7 @@ abstract class DfrExtention {
     'show_title'    => 1,
     'show_image'    => 1,
     'show_merchant' => 1,
+    'show_name'     => 1,
     'show_price'    => 1,
     'order_desc'    => 0,
     'order_by'      => '',

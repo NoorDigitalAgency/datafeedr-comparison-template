@@ -30,6 +30,11 @@ new Noor\DatafeedrExt\Template();
 /**
  * Enqueue plugin assets
  */
+add_action( 'admin_enqueue_scripts', function () {
+
+  wp_enqueue_style( 'dfrcs_template_admin_styles', plugin_dir_url( __FILE__ ) . 'assets/style-admin.css', [], '1.0.0' );
+});
+
 add_action( 'wp_enqueue_scripts', function () {
 
   wp_enqueue_style( 'dfrcs_template_styles', plugin_dir_url( __FILE__ ) . 'assets/style.css', [], '1.0.0' );

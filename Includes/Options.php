@@ -2,7 +2,7 @@
 
 namespace Noor\DatafeedrExt;
 
-use Noor\DatafeedrExt\{DfrExtention, OptionsField, AdminAlert};
+use Noor\DatafeedrExt\{DfrExtention, OptionsField, AdminAlert, Compsets};
 
 class Options extends DfrExtention {
   
@@ -101,83 +101,48 @@ class Options extends DfrExtention {
    */
   public function renderAdminPage () {
 
-    global $wpdb;
+    $warnings = $this->getWarnings();
 
-    echo '<div style="display: flex; width: 100%">';
-    echo '<div class="wrap" id="tmpl_options" style="flex: 1 1 50%;">';
+    $compsets = new Compsets();
 
-    if ( is_array( $log = $this->getWarnings() ) ) {
+    echo '<div class="tmpl_options">';
 
-      foreach ( $log as $warning ) {
+    require plugin_dir_path( __FILE__ ) . '../templates/admin/template-options.php';
 
-        printf(
-          '<div style="display: block;" class="update-nag notice notice-warning">Page: <strong>%s</strong> is displaying %s sets with no products. <a href="%s" target="_blank">inspect</a></div>',
-          get_the_title( $warning['page_id'] ),
-          $warning['warnings'],
-          $warning['permalink']
-          // $warning['editlink']
-        );
-      }
-    }
+    require plugin_dir_path( __FILE__ ) . '../templates/admin/template-shortcodes.php';
 
-    printf( '<h2>%s</h2><p>%s<a href="%s" target="_blank">%s</a></p>',
-      __( 'Datafeedr Comparison Template' ),
-      __( 'All settings apply globaly to comparison template. For single template options refere to extra shortcode args: ' ),
-      'https://github.com/NoorDigitalAgency/datafeedr-comparison-template',
-      __( 'HERE' ) );
-
-    echo '<form method="post" action="options.php">';
-    
-    echo wp_nonce_field( 'tmpl-update_options' );
-    echo settings_fields( 'tmpl_options' );
-    echo do_settings_sections( 'tmpl_options' );
-    echo submit_button();
-
-    echo '</form></div>';
-
-    $prefix = $wpdb->prefix . DFRCS_TABLE;
-    
-    $results = $wpdb->get_results( "SELECT * FROM $prefix", ARRAY_A );
-
-    $pages = array_reduce( $results, function( $acc, $curr ) use ( $results ) {
-      
-      $log = maybe_unserialize( $curr['log'] );
-      
-      $page = get_the_title( $log['original_source']['post_id'] );
-
-      $acc[$page][] = $log['original_source'];
-
-      return $acc;
-      
-    }, []);
-    
-    echo '<div class="wrap" style="flex: 1 1 50%; border-left: 1px solid #ddd; padding-left: 1rem; height: 100vh; overflow-y: scroll;">';
-    
-    foreach ( $pages as $title => $sources ) {
-      
-      echo '<h2>' . $title . '</h2>';
-    
-      foreach ( $sources as $source ) {
-
-        echo '<h4>' . $source['name'] . '</h4>';
-        echo '<hr/>';
-        ?>
-        <form action="update_set" id="1">
-          <input type="checkbox" />
-          <input type="checkbox" />
-          <input type="checkbox" />
-          <input type="text" />
-          <select></select>
-          <textarea></textarea>
-          <?php var_dump('<pre>', $source, '</pre>'); ?>
-          <input type="submit" name="" class="button button-primary" value="Save Changes" />
-          <a class="button button-secondary" role="button" href="<?php echo get_the_permalink( $source['post_id']); ?>" target="_blank">Inspect</a>
-        </form>
-        <?php
-      }
-    }
     echo '</div>';
-    echo '<div>';
+
+    // echo '<div class="wrap" id="tmpl_options" style="flex: 1 1 50%;">';
+
+    // if ( is_array( $log = $this->getWarnings() ) ) {
+
+    //   foreach ( $log as $warning ) {
+
+    //     printf(
+    //       '<div style="display: block;" class="update-nag notice notice-warning">Page: <strong>%s</strong> is displaying %s sets with no products. <a href="%s" target="_blank">inspect</a></div>',
+    //       get_the_title( $warning['page_id'] ),
+    //       $warning['warnings'],
+    //       $warning['permalink']
+    //       // $warning['editlink']
+    //     );
+    //   }
+    // }
+
+    // printf( '<h2>%s</h2><p>%s<a href="%s" target="_blank">%s</a></p>',
+    //   __( 'Datafeedr Comparison Template' ),
+    //   __( 'All settings apply globaly to comparison template. For single template options refere to extra shortcode args: ' ),
+    //   'https://github.com/NoorDigitalAgency/datafeedr-comparison-template',
+    //   __( 'HERE' ) );
+
+    // echo '<form method="post" action="options.php">';
+    
+    // echo wp_nonce_field( 'tmpl-update_options' );
+    // echo settings_fields( 'tmpl_options' );
+    // echo do_settings_sections( 'tmpl_options' );
+    // echo submit_button();
+
+    // echo '</form></div>';
   }
 
   /**

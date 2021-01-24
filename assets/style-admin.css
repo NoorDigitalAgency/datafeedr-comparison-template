@@ -1,0 +1,15 @@
+.tmpl_options {
+  display: flex;
+  width: 100%;
+}
+
+.tmpl_options .wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 50%;
+}
+
+.tmpl_options .wrap:last-child {
+  border-left: 1px solid #ddd;
+  padding-left: 20px;
+}
